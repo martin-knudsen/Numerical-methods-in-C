@@ -1,0 +1,14 @@
+#include <complex.h>
+#include <stdio.h>
+#include <math.h>
+int main()
+{	
+	printf("Gamma (5) = %f\n, j0(0.5)=%f\n",tgamma(5), j0(0.5));
+	a_r = creal(sqrt(-2))
+	a_i = cima(sqrt(-2))
+	b_i = creal(pow(M_E,Ia_r = creal(sqrt(-2))
+))
+
+
+}
+
