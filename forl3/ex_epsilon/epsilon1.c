@@ -17,6 +17,26 @@ int main()
 	printf("The for loop int_min is: %i\n",int_min_for());
 	printf("The do while loop int_min is: %i\n",int_min_do_while());
 
+	printf("Exercise 1.iii\n");
+	float eps_float[3]
+	float eps_float[] = epsilon_float();
+	double eps_double[] = epsilon_double();
+	long double eps_long_double[] = epsilon_long_double();
+
+	printf("Real epsilon float is: %g \n",FLT_EPSILON);
+	printf("While loop is: %g \n",eps_float[0]);
+	printf("For loop is: %g \n",eps_float[1]);
+	printf("Do while loop is: %g \n",eps_float[2]);
+
+	printf("Real epsilon double is: %g \n",DBL_EPSILON);
+	printf("While loop is: %g \n",eps_double[0]);
+	printf("For loop is: %g \n",eps_double[1]);
+	printf("Do while loop is: %g \n",eps_double[2]);
+
+	printf("Real epsilon long double is: %LG \n",LDBL_EPSILON);
+	printf("While loop is: %g \n",eps_long_double[0]);
+	printf("For loop is: %g \n",eps_long_double[1]);
+	printf("Do while loop is: %g \n",eps_long_double[2]);
 
 	return 0;
 }
@@ -81,4 +101,77 @@ int int_min_do_while()
 	}
 	while(i-1<i);
 	return i;
+}
+
+float epsilon_float()
+{
+	float x=1; 
+	while(1+x!=1)
+		{
+			x/=2;
+		} 
+	
+
+	
+	for(float e=1; 1+e!=1; e/=2)
+	{}
+	
+	float a =1;
+	do  
+	{
+		a/=2;
+
+	}
+	while(a!=1.0);
+
+	float epsilon[] = {x, e, a}
+	return epsilon
+}
+
+double epsilon_double()
+{
+	double x=1; 
+	while(1+x!=1)
+		{
+			x/=2;
+		} 
+
+
+	for(double e=1; 1+e!=1; e/=2)
+	{}
+	
+	double a =1;
+	do  
+	{
+		a/=2;
+
+	}
+	while(a!=1.0);
+
+	double epsilon[] = {x, e, a}
+	return epsilon
+}
+
+long double epsilon_long_double()
+{
+	long double x=1; 
+	while(1+x!=1)
+		{
+			x/=2;
+		} 
+	
+
+	for(long double e=1; 1+e!=1; e/=2)
+	{}
+	
+	long double a =1;
+	do  
+	{
+		a/=2;
+
+	}
+	while(a!=1.0);
+
+	long double epsilon[] = {x, e, a}
+	return epsilon
 }
