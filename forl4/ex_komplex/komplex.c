@@ -1,6 +1,5 @@
 #include "komplex.h"
 #include <stdio.h>
-#include <float.h>
 #include <math.h>
 
 void komplex_print (char *s, komplex a) {
@@ -69,12 +68,34 @@ komplex komplex_sin (komplex z) {
 
 	komplex iz_neg = {z.im, -z.re};
 	komplex exp2 = komplex_exp(iz_neg);
-	komplex neg_term ={-exp2.re,exp2.im};  
+	komplex neg_term ={-exp2.re,-exp2.im};  
 	
 	komplex num = komplex_add(exp1,neg_term);
 	komplex denom = {0, 2};
 
 	komplex result = komplex_div(num, denom);
+	return result;
+}
+
+komplex komplex_cos (komplex z) {
+	komplex iz = {-z.im, z.re};
+	komplex exp1 = komplex_exp(iz);
+
+	komplex iz_neg = {z.im, -z.re};
+	komplex exp2 = komplex_exp(iz_neg);
+	
+	
+	komplex num = komplex_add(exp1,exp2);
+	komplex denom = {2, 0};
+
+	komplex result = komplex_div(num, denom);
+	return result;
+}
+
+komplex komplex_sqrt (komplex z) {
+	double r = sqrt(pow(z.re,2)+ pow(z.im,2));
+	double phi = atan2(z.im, z.re);
+	komplex result = {sqrt(r)*cos(phi/2),sqrt(r)*sin(phi/2)};
 	return result;
 }
 

@@ -25,10 +25,11 @@ komplex komplex_abs      (komplex z);
 komplex komplex_exp      (komplex z);
 
 komplex komplex_sin      (komplex z);
-/*
+
 komplex komplex_cos      (komplex z);
+
 komplex komplex_sqrt     (komplex z);
-*/
+
 /*end of optional*/ 
 
 #define HAVE_KOMPLEX_H

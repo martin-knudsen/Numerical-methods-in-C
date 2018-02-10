@@ -1,6 +1,5 @@
 #include <stdio.h>
-#include"komplex.h"
-#define TINY 1e-6
+#include "komplex.h"
 
 int main(){
 	komplex a = {1,2}, b = {3,4}, c = {1,2};
@@ -60,5 +59,15 @@ int main(){
 	komplex a_sin= komplex_sin(a);
 	komplex_print("a=", a);
 	komplex_print("sin(a)=",a_sin);
+
+	printf("Now testing komplex_cos...\n");
+	komplex a_cos= komplex_cos(a);
+	komplex_print("a=", a);
+	komplex_print("cos(a)=",a_cos);
+
+	printf("Now testing complex_sqrt...\n");
+	komplex a_sqrt= komplex_sqrt(a);
+	komplex_print("a=", a);
+	komplex_print("sqrt(a)=+/-",a_sqrt);
 	
 }
