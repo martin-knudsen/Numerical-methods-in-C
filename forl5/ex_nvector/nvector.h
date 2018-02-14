@@ -11,13 +11,19 @@ double   nvector_dot_product (nvector* u, nvector* v);    /* returns dot-product
 
 /* optional*/ 
 void nvector_print    (char* s, nvector* v);     /* prints s and then vector*/ 
-  /*
-void nvector_set_zero (nvector* v);              all elements ← 0 
-int  nvector_equal    (nvector* a, nvector* b);  1, if equal, 0 otherwise 
-void nvector_add      (nvector* a, nvector* b);  a_i ← a_i + b_i 
-void nvector_sub      (nvector* a, nvector* b);  a_i ← a_i - b_i 
-void nvector_scale    (nvector* a, double x);    a_i ← x*a_i     
+
+void nvector_set_zero (nvector* v);              /* all elements ← 0 */
+
+int  nvector_equal    (nvector* a, nvector* b);  /* 1, if equal, 0 otherwise */ 
+
+
+void nvector_add      (nvector* a, nvector* b);  /* a_i ← a_i + b_i */
+
+
+void nvector_sub      (nvector* a, nvector* b);  /* a_i ← a_i - b_i */
+
+void nvector_scale    (nvector* a, double x);    /* a_i ← x*a_i */     
   
- */
+
 #define HAVE_NVECTOR_H
 #endif
