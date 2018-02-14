@@ -17,9 +17,24 @@ int main()
 	int i = n / 2;
 	nvector_set(v, i, value);
 	double vi = nvector_get(v, i);
-	if (double_equal(vi, value)) printf("test passed\n");
+	if (vi==value) printf("test passed\n");
 	else printf("test failed\n");
+	
+	printf("\nmain: testing nvector_dot_product ...\n");
+	nvector *a =nvector_alloc(2);
+	nvector *b =nvector_alloc(2);
 
+	nvector_set(a, 0, (double) 3.0);
+	nvector_set(a, 1, (double) 4.0);
+	nvector_set(b, 0, (double) 5.0);
+	nvector_set(b, 1, (double) 1.0);
+
+	double dot_product = nvector_dot_product(a,b);
+
+	printf("a*b =%g\n", dot_product);
+
+
+	/*
 	printf("\nmain: testing nvector_add ...\n");
 	nvector *a = nvector_alloc(n);
 	nvector *b = nvector_alloc(n);
@@ -41,6 +56,7 @@ int main()
 	nvector_free(a);
 	nvector_free(b);
 	nvector_free(c);
+	*/
 
 	return 0;
 }

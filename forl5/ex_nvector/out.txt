@@ -1,0 +1,9 @@
+
+main: testing nvector_alloc ...
+test passed
+
+main: testing nvector_set and nvector_get ...
+test passed
+
+main: testing nvector_dot_product ...
+a*b =19
