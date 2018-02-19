@@ -1,0 +1,39 @@
+testing komplex_set...
+a= (1,2)
+setting z as a
+Now printing z with komplex_print
+z= (1,2)
+Now testing komplex_add...
+a= (1,2)
+b= (3,4)
+a+b= (4,6)
+Now testing komplex_equal...
+a= (1,2)
+b= (3,4)
+c= (1,2)
+(a==b)=0
+(a==c)=1
+Now testing komplex_conjugate...
+a= (1,2)
+a*= (1,-2)
+Now testing komplex_equal...
+a= (1,2)
+b= (3,4)
+c= (1,2)
+(a/b)= (0.44,0.08)
+(a/c)= (1,0)
+Now testing komplex_abs...
+a= (1,2)
+|a|= (5,0)
+Now testing komplex_exp...
+a= (1,2)
+exp(a)= (-1.1312,2.47173)
+Now testing komplex_sin...
+a= (1,2)
+sin(a)= (3.16578,1.9596)
+Now testing komplex_cos...
+a= (1,2)
+cos(a)= (2.03272,-3.0519)
+Now testing complex_sqrt...
+a= (1,2)
+sqrt(a)=+/- (1.27202,0.786151)
