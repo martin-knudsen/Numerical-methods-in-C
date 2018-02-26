@@ -49,7 +49,7 @@ int main() {
 
 	gsl_vector* y_test = gsl_vector_alloc(3);
 
-	gsl_blas_dgemv(CblasNoTrans, 1.0, A_copy, x, 0, y_test);
+	gsl_blas_dgemv(CblasNoTrans, 1.0, A_copy, x, 0.0, y_test);
 	printf("Testing wether solution is correct.\n");
 	
 	double y1_test = gsl_vector_get(y_test, 0);
@@ -75,6 +75,8 @@ int main() {
 			gsl_matrix_set(H, i, j, 1/(i+j+1));
 		}
 	}
+
 	
+
 	return 0;
 }
