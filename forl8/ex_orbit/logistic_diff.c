@@ -13,6 +13,8 @@ function (double t, const double y[], double dydt[], void * params) {
 
 	return GSL_SUCCESS;
 }
+
+/*
 int 
 jacobian (double t, const double y[], double *dfdy, double dfdt[], void *params) {
 	
@@ -24,7 +26,7 @@ jacobian (double t, const double y[], double *dfdy, double dfdt[], void *params)
   	dfdt[0]=0.0;
 	return GSL_SUCCESS;
 }
-
+*/
 int main() {
 
 
@@ -42,7 +44,7 @@ int main() {
 		int status = gsl_odeiv2_driver_apply (d, &x, xi, y);
 		if (status != GSL_SUCCESS)
         {
-          printf ("error, return value=%d\n", status);
+          printf ("error, return value=%i\n", status);
           break;
         }
 
@@ -53,6 +55,6 @@ int main() {
 
 	double anal_solution = exp(3)/(exp(3)+1);
 
-	printf("The analytical solution at x=3 is %g\n", anal_solution);
+	printf("The analytical solution at x=3 is %.5e\n", anal_solution);
 	return 0;
 }
