@@ -1,0 +1,9 @@
+set term pdf
+set terminal svg
+set output "plot.svg"
+set key out 
+set xlabel("alfa")
+set ylabel("Energy")
+set title "Changing parameter alfa for the variational principle"
+
+plot "data.txt" with lines title "E(alfa)"
