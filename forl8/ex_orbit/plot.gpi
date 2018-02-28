@@ -1,0 +1,16 @@
+set term pdf
+set terminal svg
+set output "plot.svg"
+set key out 
+set xlabel("x")
+set ylabel("y")
+set title "orbital equation over 10 orbits"
+set pointsize 1.5
+set style line 1 lc rgb '#0060ad' pt 7 
+
+plot "data1.txt" using (1/$2)*sin($1):(1/$2)*cos($1) with lines title "Newton circular" \
+, "data2.txt" using (1/$2)*sin($1):(1/$2)*cos($1) with lines title "Newton eliptical"\
+, "data3.txt" using (1/$2)*sin($1):(1/$2)*cos($1) with lines title "General relativity eps = 0.01" \
+, '-' w p ls 1 title "Star"
+0 0
+e
