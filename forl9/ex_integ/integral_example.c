@@ -29,7 +29,7 @@ int main() {
   printf("Integrating ln(x)/sqrt(x) from 0 to 1\n");
   printf("Cecause it contains a singularity at zero we use qaqs\n");
   printf ("Result = % g\n", result);
-  printf ("Expected result = % g\n", expected_expected);
+  printf ("Expected result = % g\n", expected_result);
 
   gsl_integration_workspace_free (workspace);
 	
