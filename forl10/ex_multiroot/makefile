@@ -5,7 +5,7 @@ LDLIBS = -L/usr/lib/x86_64-linux-gnu -lgsl -lgslcblas -lm
 .PHONEY: all
 all: Rosenbrock
 	
-	/.Rosenbrock
+	./Rosenbrock
 
 
 
