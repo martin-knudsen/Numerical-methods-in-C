@@ -1,0 +1,11 @@
+set term pdf
+set terminal svg
+set output "plot.svg"
+set key out 
+set xlabel("r")
+set ylabel("F_E")
+set title "S-wave radial Schrödinger equation for hydrogen"
+
+plot "shooting.txt" using 1:2 with lines title\
+"F_E numerical", "shooting.txt" using 1:3 with lines\
+ title "F_E exact" 
