@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <math.h>
 #include <gsl/gsl_multimin.h>
-
+#include <gsl/gsl_vector.h>
 
 /* the function to be minimized */
 double rosenbrock(const gsl_vector *x, void *params) {

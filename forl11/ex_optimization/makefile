@@ -11,6 +11,7 @@ all: rosenbrock_minimum least_squares
 	
 	./least_squares
 
+	gnuplot plot_least_squares.gpi
 least_squares: least_squares.o
 rosenbrock_minimum: rosenbrock_minimum.o
 
