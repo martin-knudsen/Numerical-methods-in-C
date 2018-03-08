@@ -10,4 +10,4 @@ set zlabel("f(x,y)")
 
 
 plot "least_squares_plot.txt" using 1:2 title "Data"\
-, "least_squares_plot.txt" using 1:3 with lines title "Fit"
+, "least_squares_plot_fit.txt" with lines title "Fit"

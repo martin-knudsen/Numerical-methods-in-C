@@ -117,11 +117,12 @@ int main() {
 
 	fclose(my_file);
 
+	printf("The lifetime is estimated to be T=%g\n", T_val);
+
 	FILE *plot_file;
 	plot_file = fopen("least_squares_plot.txt", "w+");
 
 	int size_data =sizeof(t_data)/sizeof(t_data[0]);
-	printf("%i", size_data);
 
 	for(int j=0; j<size_data; j++) {
 		double f_value = fit_equation(t_data[j],\
@@ -131,6 +132,21 @@ int main() {
 			t_data[j], y_data[j], f_value);
 	}
     fclose(plot_file);
+
+    /* for plotting the fitequation*/
+
+    double t = 0.0, tmax = 10.0, tdelta = 0.02;
+
+    FILE *plot_fit_file;
+	plot_fit_file = fopen("least_squares_plot_fit.txt", "w+");
+
+    for(t;t<=tmax;t += tdelta) {
+    	double fvalue = fit_equation(t, A_val, B_val, T_val);
+
+    	fprintf(plot_fit_file, "%g\t %g \n", t, fvalue);
+    }
+    fclose(plot_fit_file);
+
 	gsl_vector_free(x);
   	gsl_vector_free(stepsize);
   	gsl_multimin_fminimizer_free (mini);
