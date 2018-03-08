@@ -1,0 +1,15 @@
+set term pdf
+set terminal svg
+set output "plot_rosenbrock.svg"
+set key out 
+set xlabel("x")
+set ylabel("y")
+set title "minimization of Rosenbrock function"
+
+set xrange [-1:1]
+set yrange [-1:1]
+set ticslevel 0
+set zlabel("f(x,y)")
+
+
+splot "rosenbrock_minimum.txt" u 2:3:4 with lines title "Rosenbrock minimization"
