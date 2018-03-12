@@ -31,7 +31,7 @@ void master(double x_start, double x_end, double dx) {
 
 	double hstart = 1e-3, epsabs = 1e-6, epsrel = 1e-6;
 
-	gsl_odeiv2_driver *driver = \
+	gsl_odeiv2_driver *driver1 = \
 	gsl_odeiv2_driver_alloc_y_new(\
 		&system, \
 		gsl_odeiv2_step_rk8pd, \
@@ -39,11 +39,33 @@ void master(double x_start, double x_end, double dx) {
 		epsabs,\
 		epsrel); 
 
-	double x = x_start, y[1]={0.0};
+	gsl_odeiv2_driver *driver2 = \
+	gsl_odeiv2_driver_alloc_y_new(\
+		&system, \
+		gsl_odeiv2_step_rk8pd, \
+		-hstart,\ 
+		epsabs,\
+		epsrel); 
 
+	double x = 0.0, y[1]={0.0};
+
+	for (double xx = 0.0; xx>=x_start; xx -= dx) {
+		
+		int status = gsl_odeiv2_driver_apply (driver2, &x, xx, y);
+		if (status != GSL_SUCCESS)
+        {
+          printf ("error, return value=%i\n", status);
+          break;
+        }
+        
+      	printf ("%.5e \t %.5e \n", xx, y[0]);
+	}
+	
+	x= 0.0; 
+	y[0]=0.0;
 	for (double xx = 0.0; xx<=x_end; xx += dx) {
 		
-		int status = gsl_odeiv2_driver_apply (driver, &x, xx, y);
+		int status = gsl_odeiv2_driver_apply (driver1, &x, xx, y);
 		if (status != GSL_SUCCESS)
         {
           printf ("error, return value=%i\n", status);
@@ -52,7 +74,8 @@ void master(double x_start, double x_end, double dx) {
 
       	printf ("%.5e \t %.5e \n", xx, y[0]);
 	}
-	gsl_odeiv2_driver_free (driver);
+	gsl_odeiv2_driver_free (driver1);
+	gsl_odeiv2_driver_free (driver2);
 
 }
 

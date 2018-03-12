@@ -7,4 +7,4 @@ set ylabel("u(x)")
 set title "Plot of the error function"
 
 
-plot "error_function_data.txt" 
+plot "error_function_data.txt" title "Error function"

@@ -5,7 +5,7 @@ LDLIBS = -L/usr/lib/x86_64-linux-gnu -lgsl -lgslcblas -lm
 .PHONEY: all
 all: error_function
 	
-	./error_function -3 3 0.2 > error_function_data.txt
+	./error_function -3 3 0.01 > error_function_data.txt
 
 	gnuplot plot_error_function.gpi
 
