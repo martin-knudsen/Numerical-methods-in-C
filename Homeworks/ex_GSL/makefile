@@ -12,7 +12,7 @@ all: Airy_stdio lin_eq_solver_gsl
 
 	gnuplot plot.gpi
 
-	./lin_eq_solver_gsl
+	./lin_eq_solver_gsl >output.txt
 
 Airy_stdio: Airy_stdio.o
 

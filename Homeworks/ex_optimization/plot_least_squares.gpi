@@ -1,0 +1,13 @@
+set term pdf
+set terminal svg
+set output "Least_squares_plot.svg"
+set key out 
+set xlabel("t")
+set ylabel("y")
+set title "Least squares fit"
+set ticslevel 0
+set zlabel("f(x,y)")
+
+
+plot "least_squares_plot.txt" using 1:2 title "Data"\
+, "least_squares_plot_fit.txt" with lines title "Fit"

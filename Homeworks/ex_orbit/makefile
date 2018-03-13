@@ -7,7 +7,7 @@ PLOTTER = gnuplot
 .PHONEY: all
 all: logistic_diff equatorial_motion_i equatorial_motion_ii equatorial_motion_iii
 	
-	./logistic_diff
+	./logistic_diff > output.txt
 	./equatorial_motion_i > data1.txt
 	./equatorial_motion_ii > data2.txt
 	./equatorial_motion_iii > data3.txt

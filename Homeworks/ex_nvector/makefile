@@ -3,8 +3,8 @@ LDLIBS = -lm
 
 .PHONEY: all clean indent
 
-all              : out.txt          ; cat $<           # "$<" is the first prerequisite
-out.txt          : main             ; ./$< > $@        # "$@" is the target
+all              : output.txt          ; cat $<           # "$<" is the first prerequisite
+output.txt       : main             ; ./$< > $@        # "$@" is the target
 main             : main.o nvector.o # built-in linking rule is used here         
 main.o nvector.o : nvector.h        # built-in compilation rule is used here
 

@@ -104,6 +104,9 @@ int main() {
 	int i = 0;
 	int status;
   double E_val = 0.0, f0_val = 0.0; 
+	
+	FILE *fidel = fopen("output.txt", "a+");
+	fprintf(fidel, "Shooting method part\n");
 	do
     {
       i++;
@@ -117,7 +120,7 @@ int main() {
       
       /* print the value of dependant and independant 
       variables alike*/
-      printf("iter = %i \t E = %g \t  M(E) = %g \n",i, E_val, f0_val);
+      fprintf(fidel, "iter = %i \t E = %g \t  M(E) = %g \n",i, E_val, f0_val);
       /*stop if something was wrong with iteration */
       if (status) 
       {
@@ -130,9 +133,10 @@ int main() {
     }
     while (status == GSL_CONTINUE && i < 1000);
 
-  	printf ("status = %s\n", gsl_strerror (status));
-    printf("So the solution for rmax = %g is E=%g\n", rmax, E_val);
+  	fprintf (fidel, "status = %s\n", gsl_strerror (status));
+    fprintf(fidel, "So the solution for rmax = %g is E=%g\n", rmax, E_val);
   	
+  	fclose(fidel);
     FILE *my_file;
     my_file = fopen("shooting.txt","w+");
 

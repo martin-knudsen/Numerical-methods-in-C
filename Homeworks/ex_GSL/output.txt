@@ -1,0 +1,4 @@
+Trying HH method
+x = [-1.1379 -2.83303 0.851459]
+Testing wether solution is correct.
+[6.23, 5.37, 2.29] = [6.23 5.37 2.29]

@@ -1,0 +1,5 @@
+Integrating ln(x)/sqrt(x) from 0 to 1
+Because it contains a singularity at zero we use qaqs
+Result = -4
+Expected result = -4
+The reason alfa=0.5 is a minimum is that this is the theoretical value for the QM harmonic oscillator.

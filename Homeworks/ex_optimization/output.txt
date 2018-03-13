@@ -1,0 +1,5 @@
+Finding the minimum of the Rosenbrock function
+We have converged to a minimum, see 			file rosenbrock_minimum.txt 
+Least squares part of the exercise
+We have converged to a minimum as seen in the .txt file
+The lifetime is estimated to be T=2.72063

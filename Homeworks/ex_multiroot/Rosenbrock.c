@@ -57,7 +57,7 @@ int main() {
 	/* the iterator int and status parameter*/
 	int i = 0;
 	int status;
-
+  printf("Rosenbrock part\n");
 	do
     {
       i++;
