@@ -1,7 +1,7 @@
-CFLAGS = -w -std=gnu99
-CFLAGS += 'gsl-config --cflags'
-LDLIBS += $(gsl-config --libs)
+CFLAGS = -Wall -std=gnu99 `gsl-config --cflags`
+LDLIBS = `gsl-config --libs`
 
-all: output ; cat $@
-output: main : $@ > $<
+all: main
+	./main > output.txt
+main: main.o
 clean: ; $RM main output
