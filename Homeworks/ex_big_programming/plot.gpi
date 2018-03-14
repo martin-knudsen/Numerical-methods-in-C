@@ -1,0 +1,11 @@
+set term pdf
+set terminal pdf
+set output "Eigenvalue.pdf"
+set key out 
+set xlabel("n")
+set ylabel("Eig(n)")
+set title "Largest eigenvalue of random symmetric matrix of size n"
+
+
+plot "output.txt" pt 7 ps 0.3 title "Generated eigenvalues" \
+, "fit.txt" with lines title "Linear fit"
