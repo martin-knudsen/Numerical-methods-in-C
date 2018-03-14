@@ -4,6 +4,7 @@
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_eigen.h>
 #include <errno.h>
+#include <gsl/gsl_fit.h>
 #define RND (double)rand()/RAND_MAX
 
 double diagonalization(int n) {
@@ -70,13 +71,40 @@ int main() {
 
 	const int max_n = 100;
 
+	double n_list[max_n];
+	double eigval_list[max_n];
+
 	/* finding the biggest eigenvalue for several n
 	   and directly printing it out. */
+
+	FILE *output  =fopen("output.txt", "w+");
 	for(int n=1; n<=max_n; n++) {
 
 		double eigval = diagonalization(n);
-		printf("%i \t %g \n", n, eigval);
+		fprintf(output, "%i \t %g \n", n, eigval);
+		
+		n_list[n-1]=(double) n;
+		eigval_list[n-1]=eigval;
 
 	}
+	fclose(output);
+
+	double c1, cov11, sumsq;
+	double xstride=1, ystride=1;
+	int status = gsl_fit_mul (n_list, xstride, \
+		eigval_list, ystride, max_n, &c1, &cov11, &sumsq);
+	
+	if(status != GSL_SUCCESS) {
+		printf("Status = %s \n",  gsl_strerror (status));
+	}
+
+	printf("this is c1=%g\n", c1);
+	FILE *myfile= fopen("fit.txt","w+");
+	for(int i=1; i<=100; i +=1) {
+		fprintf(myfile, "%i\t %g\n", i, c1*i);
+	}
+	fclose(myfile);
+
+
 	return EXIT_SUCCESS;
 }
