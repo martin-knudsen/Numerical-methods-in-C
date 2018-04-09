@@ -3,6 +3,13 @@
 #include <math.h>
 #include <stdlib.h>
 
+int search(double *x, double z) {
+	int i=0,j=sizeof(x)-1;
+	//binarysearch:
+	while(j-i>1){int m=(i+j)/2;if(x[m]) i=m;else j=m;}
+	return i;
+}
+
 /* Taken from Dmitri Fedorovs Interpolation chapter */
 
 double linterp(int n, double* x, double* y, double z){
@@ -34,39 +41,17 @@ double linterp_integ(int n, double *x, double *y, double z){
 		if ( z>x[m]) i_z=m; else j_z=m;}
 	
 	/* Integral from 0 to x[i] before the z*/
-	double integ_high, integ_low, integ_ij;
+	
 	for(int i=0; i<i_z; i++) {
 		int j=i+1;
-		
-		/*
-		integ_high = y[i]*x[j]+(y[j]- \
-			y[i])/(x[j]-x[i])*(1/2*x[j]-x[i])*x[j];
-		integ_low = y[i]*x[i]-1/2*(y[j]- \
-			y[i])/(x[j]-x[i])*x[i]*x[i];
-		integ_ij = integ_high-integ_low;
-		
-		
-		integral += integ_ij;
-		*/
-		integral += y[i]*(x[i+1]-x[i])+(y[i+1]-y[i])/(x[i+1]-x[i])*\
-			1/2*(x[i+1]-x[i])*(x[i+1]-x[i]); 
 
-		/*
-		printf("integ high= %g", integ_high);
-		printf("integ low= %g", integ_low);
-		*/
-		printf("integral = %g", integral);
+		integral += y[i]*(x[j]-x[i])+(y[j]-y[i])/(x[j]-x[i])*\
+			1/2*(x[j]-x[i])*(x[j]-x[i]); 
 	}
+
 	/* Integral from x[i] before z until z*/
-	/*
-	integ_high = y[i_z]*z+(y[j_z]- \
-		y[i_z])/(x[j_z]-x[i_z])*(1/2*z-x[i_z])*z;
-	integ_low = y[i_z]*x[i_z]+(y[j_z]+ \
-		y[i_z])/(x[j_z]-x[i_z])*(1/2*x[i_z]*x[i_z]);
-	integ_ij = integ_high-integ_low;
-	integral += integ_ij;
-	*/
-	integral += y[i_z]*(z-x[i_z])+(y[i_z+1]-y[i_z])/(x[i_z+1]-x[i_z])*\
+	
+	integral += y[i_z]*(z-x[i_z])+(y[j_z]-y[i_z])/(x[j_z]-x[i_z])*\
 			1/2*(z-x[i_z])*(z-x[i_z]); 
 	return integral;
 }
@@ -125,12 +110,13 @@ int main() {
 	printf("Integral of cos(x) from 0 to pi/2 is 1 analytically \n");
 
 	double integ_linear  = linterp_integ(n, x, y, M_PI/2);
-	printf("Using splines I get %g\n", integ_linear);
+	printf("Using linear splines I get %g\n", integ_linear);
 
 	printf("The theoretical derivative at point pi/2 is -1\n");
 
 	double der_linear  = linterp_der(n, x, y, M_PI/2);
 	printf("Using linear splines I get %g \n", der_linear); 
+	printf("\n");
 
 	return EXIT_SUCCESS;
 }

@@ -8,4 +8,5 @@ set title "Tabulated points from cos(x) with splines"
 
 
 plot "data_points.txt" title "Data"\
-, "lineardata.txt" title "Linear Spline" with lines
+, "lineardata.txt" title "Linear Spline" with lines\
+, "qdata.txt" title "Quadratic Spline" with lines
