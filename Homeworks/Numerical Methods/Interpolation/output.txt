@@ -1,0 +1,7 @@
+Testing if linear spline works. 
+Testfunction is cos(x) from 0 to 2pi. 
+Data for plotting the linearspline is found in lineardata.txt 
+Integral of cos(x) from 0 to pi/2 is 1 analytically 
+integral = 0.568317integral = 0.919554Using splines I get 0.968093
+The theoretical derivative at point pi/2 is -1
+Using linear splines I get -0.983609 
