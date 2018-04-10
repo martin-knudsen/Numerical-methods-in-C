@@ -3,6 +3,8 @@
 #include <math.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <gsl/gsl_interp.h>
+#include <gsl/gsl_spline.h>
 
 typedef struct{int n; double *x,*y,*b,*c,*d;} cspline;
 
@@ -45,10 +47,10 @@ double cspline_eval(cspline *s,double z){
 	int i = search(s, z);
 	int j = i+1;
 
-	double h=z-s->x[i];//calculatetheinerpolatingspline:
+	double h=z-s->x[i];
 	return s->y[i]+h*(s->b[i]+h*(s->c[i]+h*s->d[i]));
 }
-void cspline_free(cspline *s){//freetheallocatedmemory
+void cspline_free(cspline *s){
 	free(s->x);free(s->y);free(s->b);free(s->c);free(s->d);free(s);}
 
 
@@ -65,7 +67,7 @@ double cspline_derivative(cspline *s, double z){
 double cspline_integral(cspline *s, double z){
 	assert(z>=s->x[0] && z<=s->x[s->n-1]);
 
-	double integral = 0;
+	double integral = 0.0;
 
 	int i_z = search(s, z);
 	int j_z = i_z+1;
@@ -73,28 +75,21 @@ double cspline_integral(cspline *s, double z){
 	double integ_high, integ_low, integ_ij;
 	for(int i=0; i<i_z; i++) {
 		int j=i+1;
-
-		integ_high = s->y[i]*s->x[j]+s->b[i]*s->x[j]*(0.5*s->x[j]-s->x[i])\
-		+s->c[i]*s->x[j]*(1.0/3.0*s->x[j]*s->x[j]+s->x[i]*s->x[i]-s->x[j]*s->x[i])\
-		+s->d[i]*s->x[j]*s->x[j]*(0.25*s->x[j]*s->x[j]-s->x[j]*s->x[i]+1.5*s->x[i]*s->x[i]);
-		integ_low = s->y[i]*s->x[i]+s->b[i]*s->x[i]*(0.5*s->x[i]-s->x[i])\
-		+s->c[i]*s->x[i]*(1.0/3.0*s->x[i]*s->x[i]+s->x[i]*s->x[i]-s->x[i]*s->x[i])\
-		+s->d[i]*s->x[i]*s->x[i]*(0.25*s->x[i]*s->x[i]-s->x[i]*s->x[i]+1.5*s->x[i]*s->x[i]); 
+		
+		integ_high = s->y[i]*s->x[j]+s->b[i]*s->x[j]*(s->x[j]/2-s->x[i])-pow(s->c[i]*(s->x[i]-s->x[j]),3)/3+pow(s->d[i]*(s->x[j]-s->x[i]),4)/4;
+		integ_low = s->y[i]*s->x[i]+s->b[i]*s->x[i]*(s->x[i]/2-s->x[i])-pow(s->c[i]*(s->x[i]-s->x[i]),3)/3+pow(s->d[i]*(s->x[i]-s->x[i]),4)/4;
 		integ_ij = integ_high - integ_low;
 		integral += integ_ij;
 	}
-	
-	integ_high = s->y[i_z]*z+s->b[i_z]*z*(0.5*z-s->x[i_z])\
-	+s->c[i_z]*z*(1.0/3.0*z*z+s->x[i_z]*s->x[i_z]-z*s->x[i_z])\
-	+s->d[i_z]*z*z*(0.25*z*z-z*s->x[i_z]+1.5*s->x[i_z]*s->x[i_z]);
-	integ_low = s->y[i_z]*s->x[i_z]+s->b[i_z]*s->x[i_z]*(0.5*s->x[i_z]-s->x[i_z])\
-	+s->c[i_z]*s->x[i_z]*(1.0/3.0*s->x[i_z]*s->x[i_z]+s->x[i_z]*s->x[i_z]-s->x[i_z]*s->x[i_z])\
-	+s->d[i_z]*s->x[i_z]*s->x[i_z]*(0.25*s->x[i_z]*s->x[i_z]-s->x[i_z]*s->x[i_z]+1.5*s->x[i_z]*s->x[i_z]); 
+
+	integ_high = s->y[i_z]*z+s->b[i_z]*z*(z/2-s->x[i_z])-pow(s->c[i_z]*(s->x[i_z]-z),3)/3+pow(s->d[i_z]*(z-s->x[i_z]),4)/4;
+	integ_low = s->y[i_z]*s->x[i_z]+s->b[i_z]*s->x[i_z]*(s->x[i_z]/2-s->x[i_z])-pow(s->c[i_z]*(s->x[i_z]-s->x[i_z]),3)/3+pow(s->d[i_z]*(s->x[i_z]-s->x[i_z]),4)/4;
 	integ_ij = integ_high - integ_low;
 	integral += integ_ij;
-	
+
 	return integral;
 }
+
 /* function used is cosine from 0 to 2pi using 11 points */
 int main() {
 	
@@ -109,10 +104,11 @@ int main() {
 		   -0.80901,    -0.30901,  \
 		 0.30901, 0.80901,  1.0}; 
 
-	
-	printf("Testing if cspline spline works. \n");
-	printf("Testfunction is cos(x) from 0 to 2pi. \n");
-	printf("Data for plotting the cspline is found in cdata.txt \n");
+	FILE* output = fopen("output.txt", "a");
+
+	fprintf(output,"Testing if cspline spline works. \n");
+	fprintf(output,"Testfunction is cos(x) from 0 to 2pi. \n");
+	fprintf(output,"Data for plotting the cspline is found in cdata.txt \n");
 	
 	FILE *cdata = fopen("cdata.txt", "w+");
 
@@ -128,20 +124,43 @@ int main() {
 
 	fclose(cdata);
 	
-	printf("Integral of cos(x) from 0 to pi/2 is 1 analytically \n");
+	fprintf(output,"Integral of cos(x) from 0 to pi/2 is 1 analytically \n");
 
 	double integ_c  = cspline_integral(cspline_cos, M_PI/2);
-	printf("Using cubic splines I get %g\n", integ_c);
+	fprintf(output,"Using cubic splines I get %g\n", integ_c);
 
-	printf("The theoretical derivative at point pi/2 is -1\n");
+	fprintf(output,"The theoretical derivative at point pi/2 is -1\n");
 
 	double der_c  = cspline_derivative(cspline_cos, M_PI/2);
-	printf("Using cubic splines I get %g \n", der_c); 
-	printf("\n");
+	fprintf(output,"Using cubic splines I get %g \n", der_c); 
+	
 
 	cspline_free(cspline_cos);
 
-	/* extra test */
-	
+	/* extra test using gsl spline and interp*/
+	const gsl_interp_type* T = gsl_interp_cspline;
+	gsl_spline* cspline_gsl = gsl_spline_alloc(T, n);
+
+	int status = gsl_spline_init(cspline_gsl, x, y, n);
+
+	gsl_interp_accel *acc = gsl_interp_accel_alloc();
+
+	FILE* csplinegsldata = fopen("csplinegsldata.txt","w+");
+	for(double z=0.0; z<=2*M_PI;z += 2*M_PI/100) {
+
+		spline_result = gsl_spline_eval(cspline_gsl, z, acc);
+		fprintf(csplinegsldata, "%g \t %g \n", z, spline_result);
+	}
+
+	fclose(csplinegsldata);
+	fprintf(output,"I have plottet the result from gsl and my cspline in csplinetest.pdf\n");
+	void gsl_spline_free(cspline_gsl);
+
+	double derivgsl = gsl_spline_eval_deriv(cspline_gsl, M_PI/2, acc);
+	fprintf(output,"This is the derivative result at pi/2 from GSL: %g\n", derivgsl);
+	double integgsl = gsl_spline_eval_integ(cspline_gsl, 0, M_PI/2, acc);
+	fprintf(output,"This is the integral result at pi/2 from GSL: %g\n", integgsl);
+	fprintf(output,"\n");
+	fclose(output);
 	return EXIT_SUCCESS;
 }

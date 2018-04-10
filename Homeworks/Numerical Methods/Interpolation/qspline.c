@@ -97,10 +97,11 @@ int main() {
 		   -0.80901,    -0.30901,  \
 		 0.30901, 0.80901,  1.0}; 
 
-	
-	printf("Testing if qspline spline works. \n");
-	printf("Testfunction is cos(x) from 0 to 2pi. \n");
-	printf("Data for plotting the qspline is found in qdata.txt \n");
+	FILE* output = fopen("output.txt", "a");
+
+	fprintf(output,"Testing if qspline spline works. \n");
+	fprintf(output,"Testfunction is cos(x) from 0 to 2pi. \n");
+	fprintf(output,"Data for plotting the qspline is found in qdata.txt \n");
 	
 	FILE *qdata = fopen("qdata.txt", "w+");
 
@@ -116,16 +117,16 @@ int main() {
 
 	fclose(qdata);
 	
-	printf("Integral of cos(x) from 0 to pi/2 is 1 analytically \n");
+	fprintf(output,"Integral of cos(x) from 0 to pi/2 is 1 analytically \n");
 
 	double integ_q  = qspline_integral(qspline_cos, M_PI/2);
-	printf("Using qaudric splines I get %g\n", integ_q);
+	fprintf(output,"Using qaudric splines I get %g\n", integ_q);
 
-	printf("The theoretical derivative at point pi/2 is -1\n");
+	fprintf(output,"The theoretical derivative at point pi/2 is -1\n");
 
 	double der_q  = qspline_derivative(qspline_cos, M_PI/2);
-	printf("Using quadric splines I get %g \n", der_q); 
-	printf("\n");
+	fprintf(output,"Using quadric splines I get %g \n", der_q); 
+	
 
 	qspline_free(qspline_cos);
 
@@ -159,8 +160,8 @@ int main() {
 	qspline* test2 = qspline_alloc(n_test, x2, y2);
 	qspline* test3 = qspline_alloc(n_test, x3, y3);
 
-	printf("Testing that all the coefficients calculated manually are the same\n");
-	printf("As I get using the spline program\n");
+	fprintf(output,"Testing that all the coefficients calculated manually are the same\n");
+	fprintf(output,"As I get using the spline program\n");
 
 	bool status = true;
 
@@ -172,7 +173,9 @@ int main() {
 		if(b2[i]!=test2->b[i]) status = false;
 		if(b3[i]!=test3->b[i]) status = false;
 	} 
-	printf("The result of the test is: \n");
-	printf(status ? "True\n" : "False\n");
+	fprintf(output,"The result of the test is: \n");
+	fprintf(output,status ? "True\n" : "False\n");
+	fprintf(output,"\n");
+	fclose(output);
 	return EXIT_SUCCESS;
 }

@@ -1,0 +1,12 @@
+set term pdf
+set terminal pdf
+set output "csplinetest.pdf"
+set key out 
+set xlabel("x")
+set ylabel("y")
+set title "Tabulated points from cos(x) with cspline and gsl_cspline"
+
+
+plot "data_points.txt" title "Data"\
+, "cdata.txt" title "Cubic Spline" with lines \
+, "csplinegsldata.txt" title "GSL Cubic Spline" with lines

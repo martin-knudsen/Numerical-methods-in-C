@@ -1,0 +1,31 @@
+Testing if linear spline works. 
+Testfunction is cos(x) from 0 to 2pi. 
+Data for plotting the linearspline is found in lineardata.txt 
+Integral of cos(x) from 0 to pi/2 is 1 analytically 
+Using linear splines I get 0.968093
+The theoretical derivative at point pi/2 is -1
+Using linear splines I get -0.983609 
+
+Testing if qspline spline works. 
+Testfunction is cos(x) from 0 to 2pi. 
+Data for plotting the qspline is found in qdata.txt 
+Integral of cos(x) from 0 to pi/2 is 1 analytically 
+Using qaudric splines I get 1.00045
+The theoretical derivative at point pi/2 is -1
+Using quadric splines I get -0.983609 
+Testing that all the coefficients calculated manually are the same
+As I get using the spline program
+The result of the test is: 
+True
+
+Testing if cspline spline works. 
+Testfunction is cos(x) from 0 to 2pi. 
+Data for plotting the cspline is found in cdata.txt 
+Integral of cos(x) from 0 to pi/2 is 1 analytically 
+Using cubic splines I get 1.0293
+The theoretical derivative at point pi/2 is -1
+Using cubic splines I get -0.996897 
+I have plottet the result from gsl and my cspline in csplinetest.pdf
+This is the derivative result at pi/2 from GSL: -0.997859
+This is the integral result at pi/2 from GSL: 0.9937
+
