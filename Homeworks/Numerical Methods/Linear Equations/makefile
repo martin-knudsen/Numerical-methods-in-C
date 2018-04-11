@@ -1,21 +1,12 @@
-CFLAGS = -Wall -std=gnu99 `gsl-config --cflags`
-LDLIBS = `gsl-config --libs` 
+CFLAGS = -Wall -std=gnu99 `gsl-config --cflags` 
+LDLIBS = `gsl-config --libs`  
+ 
+all: QR_Gram_Schmidt
 
-all: linearSpline qspline cspline
-	./linearSpline > output.txt
-	./qspline 
-	./cspline  
-	gnuplot plot.gpi
-	gnuplot plotcspline.gpi
+	./QR_Gram_Schmidt 
 
-cspline: cspline.o
-qspline: qspline.o
-linearSpline: linearSpline.o
+QR_Gram_Schmidt: QR_Gram_Schmidt.o
 
-
-.Phony: clean
+.Phony: clean 
 clean: 
-	$(RM) linearSpline linearSpline.o qspline qspline.o \
-	cspline cspline.o cdata.txt csplinegsldata.txt \
-	csplinetest.pdf lineardata.txt data_points.txt \
-	output.txt qdata.txt splines.pdf 
+	$(RM) QR_Gram_Schmidt QR_Gram_Schmidt.o output.txt 
