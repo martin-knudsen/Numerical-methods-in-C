@@ -111,14 +111,71 @@ void qr_gs_decomp_giddens(gsl_matrix* A, gsl_matrix* R) {
 	}
 }
 
+/* taken from Dmitri Fedorovs implementation.
+
+*/
+void givens_qr(gsl_matrix* A){ /*A<-Q,R*/
+	// Iterating through the bottom part of matrix A first columns then rows
+	for(int q=0;q<A->size2;q++)for(int p=q+1;p<A->size1;p++){
+		// Finding out the angle that will zero out xq
+		double theta=atan2(gsl_matrix_get(A,p,q),gsl_matrix_get(A,q,q));
+		// iterating over above diagonal part of A
+		for(int k=q;k<A->size2;k++){
+			// getting the current value of xq, xp
+			double xq=gsl_matrix_get(A,q,k),xp=gsl_matrix_get(A,p,k);
+			// changing xq, xp according to the transformation and saving theta at A_pq
+			gsl_matrix_set(A,q,k,xq*cos(theta)+xp*sin(theta));
+			gsl_matrix_set(A,p,k,-xq*sin(theta)+xp*cos(theta));}
+			gsl_matrix_set(A,p,q,theta);}}
+
+// successively applying the givens transformation by using the found theta angles
+void givens_qr_QTvec(gsl_matrix* QR,gsl_vector *v){/*v<-QˆTv*/
+	// iterating columns of recently found QR 
+	for(int q=0;q<QR->size2;q++)for(int p=q+1;p<QR->size1;p++){
+		// saving the found theta value
+		double theta=gsl_matrix_get(QR,p,q);
+		//changing the appropriate entrance of v according to the giddens transformation
+		double vq=gsl_vector_get(v,q),vp=gsl_vector_get(v,p);
+		gsl_vector_set(v,q,vq*cos(theta)+vp*sin(theta));
+		gsl_vector_set(v,p,-vq*sin(theta)+vp*cos(theta));}}
+
+void givens_qr_solve(gsl_matrix* QR,gsl_vector* b){
+	givens_qr_QTvec(QR,b);
+	
+	/* backsubstitution from Dmitri Fedorovs following (2.4)
+		first time skipping the first for loop for starting point.
+		then iterating down through yi each time first getting ci then
+		subtracting the sum of Uik yik and dividing by Uii. 
+
+	*/
+	for(int i=b->size-1; i>=0; i--){
+		double s = gsl_vector_get(b,i);
+		for(int k=i+1; k<b->size; k++){
+			s -= gsl_matrix_get(QR,i,k)*gsl_vector_get(b,k);
+		}
+		gsl_vector_set(b,i,s/gsl_matrix_get(QR,i,i));
+	}
+}
+
+/* Also taken from Dmitri Fedorov. Basically using the same 
+logic as my own Gram Schmidt implementation except now the 
+system of equations is solved using givens
+*/
+void givens_qr_inverse(gsl_matrix* QR,gsl_matrix* B){
+	gsl_matrix_set_identity(B);
+	for(int i=0;i<QR->size2;i++){
+		gsl_vector_view v=gsl_matrix_column(B,i);
+	givens_qr_solve(QR,&v.vector);}}
+
+
 int main() {
 	
-	const int n = 4;
-	const int m = 3;
+	const int n = 5;
+	const int m = 4;
 
-	gsl_matrix* A = gsl_matrix_calloc(n, m);
-	gsl_matrix* A_clone = gsl_matrix_calloc(n, m);
-	gsl_matrix* R = gsl_matrix_calloc(m, m);
+	gsl_matrix* A = gsl_matrix_alloc(n, m);
+	gsl_matrix* A_clone = gsl_matrix_alloc(n, m);
+	gsl_matrix* R = gsl_matrix_alloc(m, m);
 
 	for(int i=0; i<n; i++){
 		for(int j=0; j<m; j++){
@@ -136,7 +193,7 @@ int main() {
 	printf("This is R:\n");
 	printm(R);
 	printf("Checking that R is upper triangular\n");
-	printf("By checking wether left-down is zero and rest isn't:\n");
+	printf("By checking wether left-down is zero \n");
 
 	double R_ij; bool status=true;
 	for(int i=1; i<m; i++){
@@ -150,21 +207,21 @@ int main() {
 	
 	printf("checking Q^TQ=I by using gsl_BLAS:\n:");
 
-	gsl_matrix* A_T = gsl_matrix_calloc(m,n);
+	gsl_matrix* A_T = gsl_matrix_alloc(m,n);
 
 	gsl_matrix_transpose_memcpy(A_T, A);
 
-	gsl_matrix* C = gsl_matrix_calloc(m, m);
+	gsl_matrix* C = gsl_matrix_alloc(m, m);
 
 	gsl_blas_dgemm(CblasNoTrans, CblasNoTrans, 1.0, A_T, A, 0.0, C);
 
-	gsl_matrix* I = gsl_matrix_calloc(m, m);
+	gsl_matrix* I = gsl_matrix_alloc(m, m);
 	gsl_matrix_set_identity(I);
 
 	printf("This is Q^TQ:\n");
 	printm(C);
 
-	gsl_matrix* leftside = gsl_matrix_calloc(n, m);
+	gsl_matrix* leftside = gsl_matrix_alloc(n, m);
 
 	gsl_blas_dgemm(CblasNoTrans, CblasNoTrans, 1.0, A, R, 0.0, leftside);
 
@@ -176,10 +233,10 @@ int main() {
 	printm(leftside);
 
 	printf("2. new matrix B:\n");
-	int n_new  = 3;
-	gsl_matrix* B = gsl_matrix_calloc(n_new, n_new);
-	gsl_matrix* B_clone = gsl_matrix_calloc(n_new, n_new);
-	gsl_matrix* R2 = gsl_matrix_calloc(n_new, n_new);
+	int n_new  = 4;
+	gsl_matrix* B = gsl_matrix_alloc(n_new, n_new);
+	gsl_matrix* B_clone = gsl_matrix_alloc(n_new, n_new);
+	gsl_matrix* R2 = gsl_matrix_alloc(n_new, n_new);
 
 	for(int i=0; i<n_new; i++){
 		for(int j=0; j<n_new; j++){
@@ -221,9 +278,9 @@ int main() {
 	// part two
 	printf("We'll use the same matrix for the inverse\n");
 	printf("so A^-1:\n");
-	gsl_matrix* D = gsl_matrix_calloc(n_new, n_new);
-	gsl_matrix* D_inverse = gsl_matrix_calloc(n_new, n_new);
-	gsl_matrix* D_test = gsl_matrix_calloc(n_new, n_new);
+	gsl_matrix* D = gsl_matrix_alloc(n_new, n_new);
+	gsl_matrix* D_inverse = gsl_matrix_alloc(n_new, n_new);
+	gsl_matrix* D_test = gsl_matrix_alloc(n_new, n_new);
 	gsl_matrix_memcpy(D, B_clone);
 	// remember B=Q, R2 is R
 	qr_gs_inverse(B, R2, D_inverse);
@@ -233,6 +290,58 @@ int main() {
 	printf("AA^-1:\n");
 	printm(D_test);
 
+	//part three
+
+	gsl_matrix* A_g = gsl_matrix_alloc(n_new, n_new);
+	gsl_matrix_memcpy(A_g, B_clone);
+	gsl_matrix*  A_g_clone= gsl_matrix_alloc(n_new, n_new);
+	gsl_matrix_memcpy(A_g_clone, B_clone);
+	
+
+	givens_qr(A_g);
+
+	printf("3. givens stuff\n");
+	printf("This is A_g:\n");
+	printm(A_g_clone);
+	printf("This is QR:\n");
+	printm(A_g);
+	printf("This is a new b:\n");
+
+	gsl_vector* b_g = gsl_vector_alloc(n_new);
+	gsl_vector* b_g_clone = gsl_vector_alloc(n_new);
+	gsl_vector* A_gx = gsl_vector_alloc(n_new);
+	for(int i=0; i<n_new; i++) {
+		double a = RND;
+		gsl_vector_set(b_g, i,a);
+		gsl_vector_set(b_g_clone, i,a);
+	}
+	printv(b_g);
+
+
+	givens_qr_solve(A_g, b_g);
+
+	printf("this is the solution Ax=b using givens:\n");
+	printv(b_g);
+
+	printf("checking that this is correct by Ax:\n");
+	gsl_blas_dgemv(CblasNoTrans, 1.0, A_g_clone, b_g, 0.0, A_gx);
+
+	printv(A_gx);
+
+	
+	// part two
+	printf("We'll use the same matrix for the inverse\n");
+	printf("so A_G^-1:\n");
+	gsl_matrix* D_g = gsl_matrix_alloc(n_new, n_new);
+	gsl_matrix* D_g_test = gsl_matrix_alloc(n_new, n_new);
+	
+	// remember B=Q, R2 is R
+	givens_qr_inverse(A_g,D_g);
+	printm(D_g);
+	gsl_blas_dgemm(CblasNoTrans, CblasNoTrans, 1.0, A_g_clone, D_g, 0.0, D_g_test);
+	printf("AA^-1:\n");
+	printm(D_g_test);
+	
 	gsl_matrix_free(A);
 	gsl_matrix_free(R);
 	gsl_matrix_free(A_clone);
@@ -242,6 +351,11 @@ int main() {
 	gsl_matrix_free(D);
 	gsl_matrix_free(D_inverse);
 	gsl_matrix_free(D_test);
+	gsl_matrix_free(A_g);
+	gsl_matrix_free(A_g_clone);
+	gsl_matrix_free(D_g);
+	gsl_matrix_free(D_g_test);
+
 
 	gsl_matrix_free(A_T);
 	gsl_matrix_free(C);
@@ -251,6 +365,9 @@ int main() {
 	gsl_vector_free(x);
 	gsl_vector_free(b);
 	gsl_vector_free(b_leftside);
+	gsl_vector_free(b_g);
+	gsl_vector_free(b_g_clone);
+	gsl_vector_free(A_gx);
 	
 	return EXIT_SUCCESS;
 }
