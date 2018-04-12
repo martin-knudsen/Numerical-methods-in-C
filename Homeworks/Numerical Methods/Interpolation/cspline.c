@@ -17,24 +17,44 @@ int search(cspline* s, double z) {
 
 /* Taken from Dmitri Fedorovs Interpolation chapter */
 cspline* cspline_alloc(int n, double *x,double *y){//buildsnaturalcspline
+	// initiating the struct and allocating space for all variables
 	cspline* s=(cspline*) malloc(sizeof(cspline));
 	s->x=(double*) malloc(n*sizeof(double));
 	s->y=(double*) malloc(n*sizeof(double));
 	s->b=(double*) malloc(n*sizeof(double));
 	s->c=(double*) malloc((n-1)*sizeof(double));
 	s->d=(double*) malloc((n-1)*sizeof(double));
-	s->n=n;for(int i=0;i<n;i++){s->x[i]=x[i];s->y[i]=y[i];}
+	s->n=n;
+
+	// transfer x and y to struct
+	for(int i=0;i<n;i++){s->x[i]=x[i];s->y[i]=y[i];}
+
+	// initiate and make helper list h and coefficient list p according
+	// to (1.6)
 	double h[n-1],p[n-1];//VLA
 	for(int i=0;i<n-1;i++){h[i]=x[i+1]-x[i];assert(h[i]>0);}
 	for(int i=0;i<n-1;i++)p[i]=(y[i+1]-y[i])/h[i];
+
+	// initiate and build diagonal system according to (1.21) and (1.22)
 	double D[n],Q[n-1],B[n];//buildingthetridiagonalsystem:
 	D[0]=2;for(int i=0;i<n-2;i++)D[i+1]=2*h[i]/h[i+1]+2;D[n-1]=2;
 	Q[0]=1;for(int i=0;i<n-2;i++)Q[i+1]=h[i]/h[i+1];
+
+	// doing the same for right hand B_i's according to (1.23)
 	for(int i=0;i<n-2;i++)B[i+1]=3*(p[i]+p[i+1]*h[i]/h[i+1]);
 	B[0]=3*p[0];B[n-1]=3*p[n-2];//Gausselimination:
+	
+	// Performing gauss elemination by changing D_i's and B's
+	// in place according to (1.25) and (1.26)
 	for(int i=1;i<n;i++){D[i]-=Q[i-1]/D[i-1];B[i]-=B[i-1]/D[i-1];}
+	
+	// using backpropagation to find b_i's according to (1.27)
+	// thereby solving the system 
 	s->b[n-1]=B[n-1]/D[n-1];//back-substitution:
 	for(int i=n-2;i>=0;i--)s->b[i]=(B[i]-Q[i]*s->b[i+1])/D[i];
+	
+	// using found b_i's to find resulting c_i's and d_i's 
+	// according to (1.18)
 	for(int i=0;i<n-1;i++){
 	s->c[i]=(-2*s->b[i]-s->b[i+1]+3*p[i])/h[i];
 	s->d[i]=(s->b[i]+s->b[i+1]-2*p[i])/h[i]/h[i];

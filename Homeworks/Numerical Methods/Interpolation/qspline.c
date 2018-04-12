@@ -6,26 +6,45 @@
 
 typedef struct {int n; double *x, *y, *b, *c;} qspline;
 
-/* Taken from Dmitri Fedorovs Interpolation chapter */
+/* Taken from Dmitri Fedorovs Interpolation chapter,
+   explained in the linearspline.c program.*/
 int search(qspline* s, double z) {
 	int i=0,j=s->n-1;
 	//binarysearch:
 	while(j-i>1){int m=(i+j)/2;if(z>s->x[m]) i=m;else j=m;}
 	return i;
 }
+
+/*Also taken from Dmitri. We use the special struct saving x and y lists
+as well as all the coefficients needed and the number of data points.
+ */
 qspline* qspline_alloc(int n, double* x,double* y){//buildsqspline
+	// start by allocating everything for the struct
 	qspline *s=(qspline*) malloc(sizeof(qspline));//spline
 	s->b=(double*) malloc((n-1)*sizeof(double)); //bi
 	s->c=(double*) malloc((n-1)*sizeof(double)); //ci
 	s->x=(double*) malloc(n*sizeof(double)); //xi
 	s->y=(double*) malloc(n*sizeof(double)); //yi
-	s->n=n; for(int i=0; i<n; i++){s->x[i]=x[i];s->y[i]=y[i];}
+	s->n=n; 
+	// transfer x and y to struct
+	for(int i=0; i<n; i++){s->x[i]=x[i];s->y[i]=y[i];}
+	
+	// initiate and make helper list h and coefficient list p according
+	// to (1.6)
 	int i; double p[n-1], h[n-1]; //VLAfromC99
 	for(i=0; i<n-1; i++){h[i]=x[i+1]-x[i];p[i]=(y[i+1]-y[i])/h[i];}
+	
+	// perform first recursion for coefficient c upwards and directly into struct
 	s->c[0]=0; //recursionup:
 	for(i=0;i<n-2;i++) s->c[i+1]=(p[i+1]-p[i]-s->c[i]*h[i])/h[i+1];
+	
+	// perform second for downwards with proper starting point into struct
 	s->c[n-2]/=2; //recursiondown:
 	for(i=n-3;i>=0;i--) s->c[i]=(p[i+1]-p[i]-s->c[i+1]*h[i+1])/h[i];
+	// these two followed (1.11) and (1.12) in lecture notes
+
+	// calculate b's from c and p because more convenient
+	// add to struct
 	for(i=0;i<n-1;i++) s->b[i]=p[i]-s->c[i]*h[i];
 	return s;}
 

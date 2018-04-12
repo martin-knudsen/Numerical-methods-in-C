@@ -3,6 +3,11 @@
 #include <math.h>
 #include <stdlib.h>
 
+/*binarysearch: works by checking wether the number is bigger
+or smaller than the middle number, and repeating the same in
+the list of smaller or bigger numbers until one finds the right one
+it therefore takes O(log(n)) time if n is size of list.
+*/
 int search(double *x, double z) {
 	int i=0,j=sizeof(x)-1;
 	//binarysearch:
@@ -13,15 +18,16 @@ int search(double *x, double z) {
 /* Taken from Dmitri Fedorovs Interpolation chapter */
 
 double linterp(int n, double* x, double* y, double z){
+	// first check that n and z have the legal values
 	assert(n>1 && z>=x[0] && z<=x[n-1]);
 	int i =0, j=n-1; 
 
-	/*binarysearch: */
+	//binary explained above
 	while (j-i > 1){ 
 		int m=(i+j)/2; 
 
 		if ( z>x[m]) i=m; else j=m;}
-	
+	//Here is the evaluation at point z. just used (1.5) from the lecture notes
 	double result = y[i]+(y[i+1]-y[i])/(x[i+1]-x[i])*(z-x[i]);
 	
 	return result;
