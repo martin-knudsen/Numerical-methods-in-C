@@ -3,7 +3,7 @@
 #include <gsl/gsl_vector.h>
 
 /* Taken from Dmitri */
-int jacobi_cyclic(gsl_matrix* A,gsl_vector* e,gsl_matrix* V){
+int jacobi_cyclic(gsl_matrix* A,gsl_vector* e,gsl_matrix* V, int* number_rot){
 	/*Jacobi diagonalization;upper triangle of A is destroyed;
 	e and V accumulate eigenvalues and eigenvectors*/
 
@@ -20,6 +20,8 @@ int jacobi_cyclic(gsl_matrix* A,gsl_vector* e,gsl_matrix* V){
 
 	// iterating over all upper diagonal elements of A in a cyclic fashion
 	for(p=0;p<n;p++)for(q=p+1;q<n;q++){
+		// keeping track of the used rotations
+		*number_rot = *number_rot+1;
 
 		// Save all the old A values at p and q used in phi
 		double app=gsl_vector_get(e,p);

@@ -4,3 +4,137 @@
 0.00
 0.00
 0.00
+0.00
+0.00
+0.00
+0.00
+Command exited with non-zero status 127
+0.00
+0.00
+0.00
+Command terminated by signal 2
+116.97
+0.00
+0.00
+0.00
+0.00
+0.00
+0.00
+0.00
+Command terminated by signal 2
+3.49
+Command terminated by signal 2
+7.48
+Command terminated by signal 2
+14.41
+Command terminated by signal 2
+109.25
+Command terminated by signal 2
+10.96
+Command terminated by signal 2
+284.19
+Command terminated by signal 2
+3.18
+0.00
+0.00
+0.00
+0.00
+0.00
+0.00
+0.00
+0.00
+0.00
+0.00
+0.00
+0.00
+Command terminated by signal 2
+4.53
+Command terminated by signal 2
+3.32
+Command terminated by signal 2
+43.24
+0.00
+0.00
+0.00
+0.00
+0.00
+0.00
+0.00
+0.00
+0.00
+0.00
+0.00
+0.00
+0.00
+0.00
+0.00
+Command terminated by signal 6
+0.00
+Command terminated by signal 6
+0.00
+Command terminated by signal 6
+0.00
+Command terminated by signal 6
+0.00
+0.00
+0.00
+0.00
+0.00
+0.00
+0.00
+0.00
+0.00
+0.00
+0.00
+0.00
+0.00
+0.00
+0.00
+0.00
+0.00
+0.00
+0.00
+0.00
+0.00
+0.00
+0.00
+0.00
+0.00
+0.00
+0.00
+0.01
+0.00
+0.00
+0.00
+Command terminated by signal 2
+5.45
+Command terminated by signal 2
+14.76
+Command terminated by signal 2
+2.19
+Command terminated by signal 2
+0.66
+Command terminated by signal 2
+30.11
+Command terminated by signal 2
+337.67
+Command terminated by signal 2
+4.57
+Command terminated by signal 2
+2.14
+Command terminated by signal 2
+1.43
+0.00
+0.00
+0.00
+Command terminated by signal 11
+0.00
+0.00
+0.00
+0.00
+0.00
+0.00
+0.00
+0.00
+0.00
+0.00

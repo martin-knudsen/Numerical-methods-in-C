@@ -1,0 +1,46 @@
+This is A:
+  0.840  0.394  0.783
+  0.394  0.798  0.912
+  0.783  0.912  0.198
+Using cyclic jacobi it has eigenvalue matrix D:
+ -0.603  0.000  0.000
+  0.000  0.432  0.000
+  0.000  0.000  2.008
+and eigenvectors:
+ -0.329  0.750  0.574
+ -0.448 -0.659  0.604
+  0.831 -0.059  0.553
+It took only 5 sweaps
+Checking that V^TAV:
+ -0.603 -0.000  0.000
+ -0.000  0.432 -0.000
+  0.000 -0.000  2.008
+1. Using the same matrix A as before for comparison
+The resulting 1 lowest eigenvalues are
+ -0.603
+The reason for this being the lowest is that this 
+Eigenvalue is calculated by the most subtractions of all
+In the algorithm according to (3.9.4) 
+The resulting 2 lowest eigenvalues are
+ -0.603
+  0.432
+The algorithm works by constantly making the off-diagonal elements 
+smaller. when we have already zeroed a row
+there is no reason to make it smaller
+Just as before we have the second most subtraction of any diagonal
+element
+The resulting 3 lowest eigenvalues are
+ -0.603
+  0.432
+  2.008
+2. The way to find the biggest eigenvalues is just 
+to add pi/2 to phi
+normal run of the algorithm takes 15 rotations
+Finding only the first eigenvalue using eig by eig takes 18 rotations
+Finding all eigenvalues using eig by eig takes: 15
+So it doesn't take less rotations, but maybe less time because of a saved for-loop
+C. The classic algorithm gives this result:
+ -0.575
+  0.432
+  1.979
+This many rotations 18
