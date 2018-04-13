@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <gsl/gsl_matrix.h>
-#include <gsl/gsl_vector.h>
+#include <gsl/gsl_vector.h>9
 #include <gsl/gsl_blas.h>
 #include "QR.h"
 #include "QR_ls.h"
@@ -27,6 +27,36 @@ void printv(gsl_vector *A){
 		printf(FMT,gsl_vector_get(A,i));
 		printf("\n");
 	}
+}
+
+double funs2(int i, double x){
+   switch(i){
+   case 0: return x*x*x; break;
+   case 1: return x*x;   break;
+   case 2: return x;   break;
+   case 3: return 1.0;   break;
+   default: {fprintf(stderr,"funs: wrong i:%d",i); return NAN;}
+   }
+}
+
+double fit(int m, gsl_vector* c, double x) {
+	double sum = 0;
+	for(int i=0;i<m;i++){
+		sum+=gsl_vector_get(c, i)*funs2(i, x);
+	}
+	return sum; 
+}
+
+double fit_plus(int i, int m, gsl_vector* c, gsl_vector* dc double x){
+	double result = 0;
+	result = fit(m, c, x)+gsl_vector_get(dc, i)*funs2(i,x); 
+	return result;
+}
+
+double fit_minus(int i, int m, gsl_vector* c, gsl_vector* dc double x){
+	double result = 0;
+	result = fit(m, c, x)-gsl_vector_get(dc, i)*funs2(i,x); 
+	return result;
 }
 
 double funs(int i, double x){
@@ -52,8 +82,6 @@ int main() {
 	gsl_vector* c = gsl_vector_alloc(m);
 	gsl_matrix* COV = gsl_matrix_alloc(m, m);
 
-
-
 	for(int i=0;i<n;i++){
 		gsl_vector_set(x,i,ax[i]);
 		gsl_vector_set(y,i,ay[i]);
@@ -65,12 +93,44 @@ int main() {
 	printf("1.2 The value of the fit coefficients c:\n");
 	printv(c);
 
+	// B.2
+	
+	m = 4;
+	gsl_vector* c2 = gsl_vector_alloc(m);
+	gsl_vector* dc2 = gsl_vector_alloc(m);
+	gsl_matrix* COV2 = gsl_matrix_alloc(m, m);
+	least_squares(x,y,dy,m,funs2,c2,COV2);
+
+	for(int i=0; i<m; i++){
+		gsl_vector_set(dc2, i, sqrt(gsl_matrix_get(COV2, i, i)));
+	}
+
+	FILE* fit =fopen("fit.txt", "w+");
+	FILE* data =fopen("data.txt", "w+");
+	for(int i=0; i<n; i++){
+		fprintf(data, "%g\t %g\t %g \n",ax[i], ay[i], ady[i]);
+	}
+
+	fclose(data);  
+	for(int i=0; i<n; i++){
+		for(int j=0;j<m; j++){
+
+		}
+	}
+
+	fclose(fit); 
+
+
+
 
 	gsl_vector_free(x);
 	gsl_vector_free(y);
 	gsl_vector_free(dy);
 	gsl_vector_free(c);
 	gsl_matrix_free(COV);
+	gsl_vector_free(c2);
+	gsl_vector_free(dc2);
+	gsl_matrix_free(COV2);
 
 	return EXIT_SUCCESS;
 }
