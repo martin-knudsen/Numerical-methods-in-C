@@ -6,11 +6,11 @@
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_blas.h>
+#include "QR.h"
+#include "QR_ls.h"
 #define RND (double)rand()/RAND_MAX
 #define FMT "%7.3f" //format of print "7 width, 3 digits after comma" 
-#include "jacobi_cyclic.h"
-#include "jacobi_eig_by_eig.h"
-#include "jacobi_classic.h"
+
 
 // inspired by Dmitri Fedorovs print implementation
 void printm(gsl_matrix *A){
@@ -29,125 +29,48 @@ void printv(gsl_vector *A){
 	}
 }
 
+double funs(int i, double x){
+   switch(i){
+   case 0: return log(x); break;
+   case 1: return 1.0;   break;
+   case 2: return x;     break;
+   default: {fprintf(stderr,"funs: wrong i:%d",i); return NAN;}
+   }
+}
 
 int main() {
 		
-	const int n = 3;
+	double ax[]  =  {0.1 ,   1.33  ,  2.55  ,  3.78   ,    5.0  ,  6.22  ,  7.45  ,  8.68  ,   9.9};
+	double ay[]  =   {-15.3 ,   0.32  ,  2.45  ,  2.75  ,  2.27  ,  1.35  , 0.157  , -1.23  , -2.75};
+	double ady[] =   { 1.04  , 0.594 ,  0.983  , 0.998 ,   1.11  , 0.398 ,  0.535  , 0.968  , 0.478};
 
-	gsl_matrix* A = gsl_matrix_alloc(n, n);
-	gsl_matrix* A_clone = gsl_matrix_alloc(n, n);
-	gsl_matrix* V = gsl_matrix_alloc(n, n);
-	gsl_matrix* D = gsl_matrix_alloc(n, n);
-	gsl_matrix*	VTAV = gsl_matrix_alloc(n, n);
-	gsl_vector* e = gsl_vector_alloc(n);
+	int n = sizeof(ax)/sizeof(ax[0]);
+	int m = 3;
+	gsl_vector* x = gsl_vector_alloc(n);
+	gsl_vector* y = gsl_vector_alloc(n);
+	gsl_vector* dy = gsl_vector_alloc(n);
+	gsl_vector* c = gsl_vector_alloc(m);
+	gsl_matrix* COV = gsl_matrix_alloc(m, m);
 
-	gsl_matrix_set_identity(D);
 
-	double a;
-	for(int i=0; i<n; i++){
-		for(int j=i; j<n; j++){
-			a = RND;
-			gsl_matrix_set(A, i, j, a);
-			gsl_matrix_set(A, j, i, a);
-		}
+
+	for(int i=0;i<n;i++){
+		gsl_vector_set(x,i,ax[i]);
+		gsl_vector_set(y,i,ay[i]);
+		gsl_vector_set(dy,i,ady[i]);
 	}
 
-	gsl_matrix_memcpy(A_clone, A);
-	int number_rot_cyclic = 0;
+	least_squares(x,y,dy,m,funs,c,COV);
 
-	// start 
-	int sweaps = jacobi_cyclic(A,e,V,&number_rot_cyclic);
+	printf("1.2 The value of the fit coefficients c:\n");
+	printv(c);
 
-	for(int i=0; i<n; i++){
-			gsl_matrix_set(D, i, i, gsl_vector_get(e, i));
-	}
 
-	printf("This is A:\n");
-	printm(A_clone);
-	printf("Using cyclic jacobi it has eigenvalue matrix D:\n");
-	printm(D);
-	printf("and eigenvectors:\n");
-	printm(V);
-	printf("It took only %i sweaps\n", sweaps);
-	printf("Checking that V^TAV:\n");
+	gsl_vector_free(x);
+	gsl_vector_free(y);
+	gsl_vector_free(dy);
+	gsl_vector_free(c);
+	gsl_matrix_free(COV);
 
-	gsl_blas_dgemm(CblasNoTrans, CblasNoTrans, 1.0, A_clone, V, 0.0, A);
-	gsl_blas_dgemm(CblasTrans, CblasNoTrans, 1.0, V, A, 0.0, VTAV);
-	printm(VTAV);
-
-	// Part B 
-	int n_eigval = 1; int number_rot_eig_by_eig = 0;
-	printf("1. Using the same matrix A as before for comparison\n");
-	printf("The resulting %i lowest eigenvalues are\n", n_eigval);
-	gsl_matrix_set_identity(V);
-	gsl_vector_set_zero(e);
-
-	gsl_matrix_memcpy(A, A_clone);
-	sweaps = jacobi_eig_by_eig(A,e,V, n_eigval, &number_rot_eig_by_eig);
-
-	for(int i=0; i<n_eigval; i++) {
-		printf(FMT, gsl_vector_get(e, i));
-		printf("\n");
-	}
-	printf("The reason for this being the lowest is that this \n");
-	printf("Eigenvalue is calculated by the most subtractions of all\n");
-	printf("In the algorithm according to (3.9.4) \n");
-
-	n_eigval = 2; int number_rot_waste = 0;
-	printf("The resulting %i lowest eigenvalues are\n", n_eigval);
-	gsl_matrix_set_identity(V);
-	gsl_vector_set_zero(e);
-
-	gsl_matrix_memcpy(A, A_clone);
-	sweaps = jacobi_eig_by_eig(A,e,V, n_eigval, &number_rot_waste);
-
-	for(int i=0; i<n_eigval; i++) {
-		printf(FMT, gsl_vector_get(e, i));
-		printf("\n");
-	}
-	printf("The algorithm works by constantly making the off-diagonal elements \n");
-	printf("smaller. when we have already zeroed a row\n");
-	printf("there is no reason to make it smaller\n");
-	printf("Just as before we have the second most subtraction of any diagonal\n");
-	printf("element\n");
-
-	n_eigval = 3;
-	printf("The resulting %i lowest eigenvalues are\n", n_eigval);
-	gsl_matrix_set_identity(V);
-	gsl_vector_set_zero(e);
-	number_rot_waste = 0;
-	gsl_matrix_memcpy(A, A_clone);
-	sweaps = jacobi_eig_by_eig(A,e,V, n_eigval, &number_rot_waste);
-
-	for(int i=0; i<n_eigval; i++) {
-		printf(FMT, gsl_vector_get(e, i));
-		printf("\n");
-	}
-
-	printf("2. The way to find the biggest eigenvalues is just \n");
-	printf("to add pi/2 to phi\n");
-
-	printf("normal run of the algorithm takes %i rotations\n", number_rot_cyclic);
-	printf("Finding only the first eigenvalue using eig by eig takes %i rotations\n", number_rot_eig_by_eig);
-	printf("Finding all eigenvalues using eig by eig takes: %i\n", number_rot_waste);
-	printf("So it doesn't take less rotations, but maybe less time because of a saved for-loop\n");
-
-	printf("C. The classic algorithm gives this result:\n");
-	number_rot_waste = 0;
-	gsl_matrix_memcpy(A, A_clone);
-	gsl_matrix_set_identity(V);
-	gsl_vector_set_zero(e);
-	sweaps = jacobi_classic(A,e,V, &number_rot_waste);
-	printv(e);
-	printf("This many rotations %i\n",number_rot_waste);
-
-	gsl_matrix_free(A);
-	gsl_matrix_free(A_clone);
-	gsl_matrix_free(V);
-	gsl_matrix_free(VTAV);
-	gsl_matrix_free(D);
-
-	gsl_vector_free(e);
-		
 	return EXIT_SUCCESS;
 }

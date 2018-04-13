@@ -1,6 +1,7 @@
-#ifndef HAVE_jacobi_clasic
-#define HAVE_jacobi_clasic
+#ifndef HAVE_QR_ls
+#define HAVE_QR_ls
 
-int jacobi_clasic(gsl_matrix* A,gsl_vector* e,gsl_matrix* V, int* number_rot);
+void least_squares(gsl_vector* x, gsl_vector* y, gsl_vector* dy, int m,
+				 double funs(int i, double x), gsl_vector* c, gsl_matrix* result);
 
 #endif

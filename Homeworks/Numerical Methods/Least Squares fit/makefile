@@ -3,11 +3,11 @@ LDLIBS = `gsl-config --libs`
  
 all: main
 
-	 ./main >out.txt
+	 ./main 
 
-main: main.o QR_ls.o
+main: main.o QR_ls.o QR.o
 
-main.o QR_ls.o: QR_ls.h
+main.o QR_ls.o QR.o: QR_ls.h QR.h
 
 .Phony: clean 
 clean: 
