@@ -2,7 +2,7 @@ CFLAGS = -Wall -std=gnu99 `gsl-config --cflags`
 LDLIBS = `gsl-config --libs` 
 
 all: linearSpline qspline cspline 
-	./linearSpline > output.txt 
+	./linearSpline > out.txt 
 	./qspline  
 	./cspline   
 	gnuplot plot.gpi 

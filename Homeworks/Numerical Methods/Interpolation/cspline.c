@@ -124,7 +124,7 @@ int main() {
 		   -0.80901,    -0.30901,  \
 		 0.30901, 0.80901,  1.0}; 
 
-	FILE* output = fopen("output.txt", "a");
+	FILE* output = fopen("out.txt", "a");
 
 	fprintf(output,"Testing if cspline spline works. \n");
 	fprintf(output,"Testfunction is cos(x) from 0 to 2pi. \n");

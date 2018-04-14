@@ -1,6 +1,6 @@
-set term pdf
-set terminal pdf
-set output "splines.pdf"
+set term svg background rgb "white"
+set terminal svg
+set output "plot.svg"
 set key out 
 set xlabel("x")
 set ylabel("y")

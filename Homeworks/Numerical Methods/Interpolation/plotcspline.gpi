@@ -1,6 +1,6 @@
-set term pdf
-set terminal pdf
-set output "csplinetest.pdf"
+set term svg background rgb "white"
+set terminal svg
+set output "csplinetest.svg"
 set key out 
 set xlabel("x")
 set ylabel("y")
