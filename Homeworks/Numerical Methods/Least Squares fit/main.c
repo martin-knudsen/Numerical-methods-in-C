@@ -2,12 +2,12 @@
 #include <assert.h>
 #include <math.h>
 #include <stdlib.h>
-#include <stdbool.h>
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_vector.h>9
 #include <gsl/gsl_blas.h>
 #include "QR.h"
 #include "QR_ls.h"
+#include "s_ls.h"
 #define RND (double)rand()/RAND_MAX
 #define FMT "%7.3f" //format of print "7 width, 3 digits after comma" 
 
@@ -160,6 +160,16 @@ int main() {
 	printf("As one can see the least squares fit is not perfect but reaonably within the errorbars\n");
 	printf("at least for this example purpose..\n");
 
+	// part C
+	printf("C. Testing if the singular value version works.\n");
+	printf("Using the same function as in 1.2 \n");
+	printf("The value of the fit coefficients c:\n");
+	gsl_vector_set_zero(c);
+	gsl_matrix_set_zero(COV);
+	m=3;
+	least_squares_singular(x,y,dy,m,funs,c,COV);
+	printv(c);
+	printf("unbelievable it actually works!\n");
 
 	gsl_vector_free(x);
 	gsl_vector_free(y);
