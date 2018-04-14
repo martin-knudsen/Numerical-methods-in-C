@@ -1,6 +1,7 @@
 #include <math.h>
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_vector.h>
+#include <gsl/gsl_blas.h>
 
 void least_squares(gsl_vector* x, gsl_vector* y, gsl_vector* dy, int m,
 				 double funs(int i, double x), gsl_vector* c, gsl_matrix* COV){
@@ -54,8 +55,8 @@ void least_squares(gsl_vector* x, gsl_vector* y, gsl_vector* dy, int m,
     gsl_matrix_set_identity(I);
     qr_gs_inverse(I, R, RINV);
 
-    gsl_blas_dgemmm(CblasNoTrans, CblasTrans, 1.0, RINV, RINV, 0.0, COV);
-    
+    gsl_blas_dgemm(CblasNoTrans, CblasTrans, 1.0, RINV, RINV, 0.0, COV);
+
 	gsl_matrix_free(A);
 	gsl_matrix_free(A_clone);
 	gsl_matrix_free(R);

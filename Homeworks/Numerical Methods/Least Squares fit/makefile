@@ -3,7 +3,8 @@ LDLIBS = `gsl-config --libs`
  
 all: main
 
-	 ./main 
+	 ./main > out.txt
+	 gnuplot plot.gpi
 
 main: main.o QR_ls.o QR.o
 

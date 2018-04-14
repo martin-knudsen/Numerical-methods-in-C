@@ -31,9 +31,9 @@ void printv(gsl_vector *A){
 
 double funs2(int i, double x){
    switch(i){
-   case 0: return x*x*x; break;
-   case 1: return x*x;   break;
-   case 2: return x;   break;
+   case 0: return -exp(-x); break;
+   case 1: return sqrt(x);   break;
+   case 2: return sin(x);     break;
    case 3: return 1.0;   break;
    default: {fprintf(stderr,"funs: wrong i:%d",i); return NAN;}
    }
@@ -47,13 +47,13 @@ double fit(int m, gsl_vector* c, double x) {
 	return sum; 
 }
 
-double fit_plus(int i, int m, gsl_vector* c, gsl_vector* dc double x){
+double fit_plus(int i, int m, gsl_vector* c, gsl_vector* dc, double x){
 	double result = 0;
 	result = fit(m, c, x)+gsl_vector_get(dc, i)*funs2(i,x); 
 	return result;
 }
 
-double fit_minus(int i, int m, gsl_vector* c, gsl_vector* dc double x){
+double fit_minus(int i, int m, gsl_vector* c, gsl_vector* dc, double x){
 	double result = 0;
 	result = fit(m, c, x)-gsl_vector_get(dc, i)*funs2(i,x); 
 	return result;
@@ -105,22 +105,60 @@ int main() {
 		gsl_vector_set(dc2, i, sqrt(gsl_matrix_get(COV2, i, i)));
 	}
 
-	FILE* fit =fopen("fit.txt", "w+");
+	
 	FILE* data =fopen("data.txt", "w+");
 	for(int i=0; i<n; i++){
 		fprintf(data, "%g\t %g\t %g \n",ax[i], ay[i], ady[i]);
 	}
 
 	fclose(data);  
-	for(int i=0; i<n; i++){
-		for(int j=0;j<m; j++){
 
-		}
+	// i=0
+	FILE* fit_c0 =fopen("fit_c0.txt", "w+");
+	
+	double fity, fitplus, fitminus; 
+	double zmax = 10, deltaz = zmax/200, z;
+	
+	for(z=0.0;z<zmax; z +=deltaz){
+		fity = fit(m,c2,z);
+		fitplus = fit_plus(0,m,c2,dc2,z);
+		fitminus = fit_minus(0,m,c2,dc2,z);
+		fprintf(fit_c0, "%g\t%g\t%g\t%g\n",z,fity,fitplus,fitminus);
 	}
+	fclose(fit_c0); 
 
-	fclose(fit); 
+	// i=1
+	FILE* fit_c1 =fopen("fit_c1.txt", "w+");
+	for(z=0.0;z<zmax; z +=deltaz){
+		fity = fit(m,c2,z);
+		fitplus = fit_plus(1,m,c2,dc2,z);
+		fitminus = fit_minus(1,m,c2,dc2,z);
+		fprintf(fit_c1, "%g\t%g\t%g\t%g\n",z,fity,fitplus,fitminus);
+	}
+	fclose(fit_c1); 
 
+	// i=2
+	FILE* fit_c2 =fopen("fit_c2.txt", "w+");
+	for(z=0.0;z<zmax; z +=deltaz){
+		fity = fit(m,c2,z);
+		fitplus = fit_plus(2,m,c2,dc2,z);
+		fitminus = fit_minus(2,m,c2,dc2,z);
+		fprintf(fit_c2, "%g\t%g\t%g\t%g\n",z,fity,fitplus,fitminus);
+	}
+	fclose(fit_c2); 
 
+	// i=3
+	FILE* fit_c3 =fopen("fit_c3.txt", "w+");
+	for(z=0.0;z<zmax; z +=deltaz){
+		fity = fit(m,c2,z);
+		fitplus = fit_plus(3,m,c2,dc2,z);
+		fitminus = fit_minus(3,m,c2,dc2,z);
+		fprintf(fit_c3, "%g\t%g\t%g\t%g\n",z,fity,fitplus,fitminus);
+	}
+	fclose(fit_c3); 
+
+	printf("As one can see the least squares fit is not perfect but reaonably within the errorbars\n");
+	printf("at least for this example purpose..\n");
 
 
 	gsl_vector_free(x);

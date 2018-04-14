@@ -1,0 +1,6 @@
+1.2 The value of the fit coefficients c:
+  6.991
+  0.990
+ -1.996
+As one can see the least squares fit is not perfect but reaonably within the errorbars
+at least for this example purpose..
