@@ -54,6 +54,21 @@ void qr_gs_solve(gsl_matrix *Q, gsl_matrix* R, \
 	}
 }
 
+void qr_solve_system(gsl_matrix* A, gsl_vector* b, gsl_vector* x){
+	int n = A->size1;
+	int m = A->size2;
+
+	gsl_matrix* A_clone = gsl_matrix_alloc(n,m);
+	gsl_matrix* R = gsl_matrix_alloc(m,m);
+
+	gsl_matrix_memcpy(A_clone, A);
+	qr_gs_decomp(A_clone,R);
+	qr_gs_solve(A_clone,R,b,x);
+
+	gsl_matrix_free(A_clone);
+	gsl_matrix_free(R);
+}
+
 void qr_gs_inverse(const gsl_matrix* Q, const gsl_matrix* R, gsl_matrix* B){
 	int n = Q->size1;
 
