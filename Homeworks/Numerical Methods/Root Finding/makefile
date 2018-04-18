@@ -6,9 +6,9 @@ all: main
 	 ./main 
 	
 
-main: main.o QR.o Newton.o
+main: main.o Newton.o QR.o 
 
-main.o QR.o Newton.o: QR.h Newton.h
+main.o Newton.o QR.o: Newton.h QR.h 
 
 .Phony: clean 
 clean: 
