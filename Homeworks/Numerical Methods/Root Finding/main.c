@@ -34,7 +34,8 @@ int main() {
 	int n=2;
 	int function_calls = 0;
 	bool ANALYTIC = false;
-
+	double epsilon_system=1e-3, epsilon=1e-6;
+	double dx_system=1e-9, dx=1e-9;
 
 	gsl_vector* x = gsl_vector_alloc(n);
 	gsl_vector* fx = gsl_vector_alloc(n);
@@ -131,17 +132,17 @@ int main() {
 	
 	// system
 	printf("A. Numerical Jacobian\n");
-	double dx=1e-9, epsilon=1e-3;
+	
 	printf("Testing if the implementation works on the system of equations provided.\n");
 	
 	gsl_vector_set(x,0,1);
 	gsl_vector_set(x,1,0);
 	
-	printf("I set dx=%g and epsilon=%g\n",dx, epsilon);
+	printf("I set dx=%g and epsilon=%g\n",dx_system, epsilon_system);
 	printf("xstart is:\n");
 	printv(x);
 
-	newton(system_f,x,dx,epsilon, ANALYTIC);	
+	newton(system_f,x,dx_system,epsilon_system, ANALYTIC);	
 	
 	printf("The root found is: \n");
 	printv(x);
@@ -152,7 +153,6 @@ int main() {
 	printf("\n");
 	// Rosenbrock
 	function_calls = 0;
-	dx=1e-8, epsilon=1e-3;
 	printf("Testing if the implementation works on Rosenbrock.\n");
 	gsl_vector_set(x,0,0);
 	gsl_vector_set(x,1,0);
@@ -197,17 +197,16 @@ int main() {
 
 	// system
 	function_calls = 0;
-	dx=1e-9, epsilon=1e-3;
 	printf("Testing if the implementation works on the system of equations provided.\n");
 	
 	gsl_vector_set(x,0,1);
 	gsl_vector_set(x,1,0);
 	
-	printf("I set dx=%g and epsilon=%g\n",dx, epsilon);
+	printf("I set dx=%g and epsilon=%g\n",dx_system, epsilon_system);
 	printf("xstart is:\n");
 	printv(x);
 
-	newton(system_f,x,dx,epsilon, ANALYTIC);	
+	newton(system_f,x,dx_system,epsilon_system, ANALYTIC);	
 	
 	printf("The root found is: \n");
 	printv(x);
@@ -219,7 +218,6 @@ int main() {
 
 	// Rosenbrock
 	function_calls = 0;
-	dx=1e-8, epsilon=1e-3;
 	printf("Testing if the implementation works on Rosenbrock.\n");
 	gsl_vector_set(x,0,0);
 	gsl_vector_set(x,1,0);
@@ -257,12 +255,12 @@ int main() {
 	printv(fx);
 	printf("Number of function calls: %i\n",function_calls);
 	printf("\n");
+
 	// Gsl stuff
 	printf("Testing with gsl multiroot fsolver using dnewton type\n");
 	int i=0, status;
 	// system
 	printf("System of equations\n");
-	dx=1e-6, epsilon=1e-3;	
 	gsl_vector_set(x,0,1);
 	gsl_vector_set(x,1,0);
 	
@@ -286,7 +284,7 @@ int main() {
 
       if (status) break;
 
-      status = gsl_multiroot_test_residual (s->f, epsilon);
+      status = gsl_multiroot_test_residual (s->f, epsilon_system);
     }
     while (status == GSL_CONTINUE && i < 1000);
     
@@ -304,7 +302,6 @@ int main() {
 	// Rosenbrock
 	printf("Rosenbrock\n");
 	i=0;
-	dx=1e-6, epsilon=1e-3;	
 	gsl_vector_set(x,0,0);
 	gsl_vector_set(x,1,0);
 	
@@ -337,7 +334,6 @@ int main() {
 	// Himmelblau
 	printf("Himmelblau\n");
 	i=0;
-	dx=1e-6, epsilon=1e-3;	
 	gsl_vector_set(x,0,0);
 	gsl_vector_set(x,1,0);
 	
@@ -379,13 +375,83 @@ int main() {
 		"which it uses 2-3 times less.\n"
 		"When comparing to the gsl method one can see that our version takes \n"
 		"many more steps. The algorithm used for gsl was the newton method without\n"
-		"analytical jacobian. The disparity must come from an optimized algorithm in gsl.\n");
-
+		"analytical jacobian. The disparity must come from an optimized algorithm in gsl.\n"
+		"It is also worth noting that gsl, numerical and analytical algorithms\n"
+		"all find slightly different roots for the system of equations. This is probably because\n"
+		"they work slightly different, and hence move to the root using different routes\n");
+	
 	printf("\n\n");
 
 	//part C
-	printf("C. Advanced backtracking\n");
+	printf("C. Advanced backtracking (quadratic interpolation)\n");
+	printf("Using analytical Jacobian\n");
+	ANALYTIC = true;
 
+	// system
+	function_calls = 0;
+	printf("Testing if the implementation works on the system of equations provided.\n");
+	
+	gsl_vector_set(x,0,1);
+	gsl_vector_set(x,1,0);
+	
+	printf("I set dx=%g and epsilon=%g\n",dx_system, epsilon_system);
+	printf("xstart is:\n");
+	printv(x);
+
+	newton_quadratic_backtracking(system_f,x,dx_system,epsilon_system, ANALYTIC);	
+	
+	printf("The root found is: \n");
+	printv(x);
+	printf("Here f(x) is (should be close to zero-vector)\n");
+	system_f(x,fx,J);
+	printv(fx);
+	printf("Number of function calls: %i\n",function_calls);
+	printf("\n");
+
+	// Rosenbrock
+	function_calls = 0;
+	printf("Testing if the implementation works on Rosenbrock.\n");
+	gsl_vector_set(x,0,0);
+	gsl_vector_set(x,1,0);
+	
+	printf("I set dx=%g and epsilon=%g\n",dx, epsilon);
+	printf("xstart is:\n");
+	printv(x);
+
+	newton_quadratic_backtracking(Rosenbrock_grad_f,x,dx,epsilon, ANALYTIC);	
+
+	printf("The root found is: \n");
+	printv(x);
+	printf("Here f(x) is\n");
+	Rosenbrock_grad_f(x,fx,J);
+	printv(fx);
+	printf("Number of function calls: %i\n",function_calls);
+	printf("\n");
+
+	// Himmelblau
+	function_calls = 0;
+	printf("Testing if the implementation works on Himmelblau.\n");
+	gsl_vector_set(x,0,0);
+	gsl_vector_set(x,1,0);
+	
+	printf("I set dx=%g and epsilon=%g\n",dx, epsilon);
+	printf("xstart is:\n");
+	printv(x);
+
+	newton_quadratic_backtracking(Himmelblau_grad_f,x,dx,epsilon, ANALYTIC);	
+
+	printf("The root found is: \n");
+	printv(x);
+	printf("Here f(x) is\n");
+	Himmelblau_grad_f(x,fx,J);
+	printv(fx);
+	printf("Number of function calls: %i\n",function_calls);
+	printf("\n");
+
+ 	printf("The number of steps taken is exactly the same as before\n");
+ 	printf("This doesn't mean the advanced backtracking does not have an advantage\n");
+ 	printf("over the simple one, but possibly just that the systems are too simple\n");
+ 	printf("or the values of epsilon and dx are the dominant factor\n");
 	gsl_vector_free(x);
 	gsl_vector_free(fx);
 	gsl_matrix_free(J);

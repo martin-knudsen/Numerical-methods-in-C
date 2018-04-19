@@ -1,0 +1,193 @@
+A. Numerical Jacobian
+Testing if the implementation works on the system of equations provided.
+I set dx=1e-09 and epsilon=0.001
+xstart is:
+1.00000000
+0.00000000
+Number of steps taken is: 50
+The root found is: 
+9.07878553
+0.00001101
+Here f(x) is (should be close to zero-vector)
+-0.00073031
+0.00000305
+Number of function calls: 707
+
+Testing if the implementation works on Rosenbrock.
+I set dx=1e-09 and epsilon=1e-06
+xstart is:
+0.00000000
+0.00000000
+Number of steps taken is: 207
+The root found is: 
+0.99999977
+0.99999953
+Here f(x) is
+0.00000034
+-0.00000040
+Number of function calls: 3380
+
+Testing if the implementation works on Himmelblau.
+I set dx=1e-09 and epsilon=1e-06
+xstart is:
+0.00000000
+0.00000000
+Number of steps taken is: 4
+The root found is: 
+-0.27084459
+-0.92303856
+Here f(x) is
+0.00000010
+0.00000004
+Number of function calls: 45
+
+
+B. using analytical Jacobian
+Testing if the implementation works on the system of equations provided.
+I set dx=1e-09 and epsilon=0.001
+xstart is:
+1.00000000
+0.00000000
+Number of steps taken is: 40
+The root found is: 
+8.75415055
+0.00001141
+Here f(x) is (should be close to zero-vector)
+-0.00088590
+0.00004639
+Number of function calls: 217
+
+Testing if the implementation works on Rosenbrock.
+I set dx=1e-09 and epsilon=1e-06
+xstart is:
+0.00000000
+0.00000000
+Number of steps taken is: 208
+The root found is: 
+1.00000000
+1.00000000
+Here f(x) is
+0.00000000
+-0.00000000
+Number of function calls: 1727
+
+Testing if the implementation works on Himmelblau.
+I set dx=1e-09 and epsilon=1e-06
+xstart is:
+0.00000000
+0.00000000
+Number of steps taken is: 4
+The root found is: 
+-0.27084459
+-0.92303856
+Here f(x) is
+0.00000000
+-0.00000000
+Number of function calls: 13
+
+Testing with gsl multiroot fsolver using dnewton type
+System of equations
+xstart is:
+1.00000000
+0.00000000
+status = success
+The root found is: 
+9.09724815
+0.00001099
+Here f(x) is 
+-0.00016903
+0.00000098
+Number of steps taken is: 10
+
+Rosenbrock
+xstart is:
+0.00000000
+0.00000000
+status = success
+The root found is: 
+1.00000000
+1.00000000
+Here f(x) is 
+-0.00000037
+0.00000018
+Number of steps taken is: 3
+
+Himmelblau
+xstart is:
+0.00000000
+0.00000000
+status = success
+The root found is: 
+-0.27084459
+-0.92303856
+Here f(x) is 
+0.00000000
+-0.00000000
+Number of steps taken is: 4
+
+As one can see the use of an analytical jacobian
+does not have a dramatic effect on the stepsize
+and even increases it a bit in the Rosenbrock function. 
+This could be a coincidence as a slightly wrong jacobian
+might luckily force the jacobian in a good direction of
+function space maybe to not get stuck in a bad local place
+Probably if we would have more variables it would matter more
+However the analytical version is superior everywhere in terms
+of speed as it limits the number of calls to the function significantly
+which it uses 2-3 times less.
+When comparing to the gsl method one can see that our version takes 
+many more steps. The algorithm used for gsl was the newton method without
+analytical jacobian. The disparity must come from an optimized algorithm in gsl.
+It is also worth noting that gsl, numerical and analytical algorithms
+all find slightly different roots for the system of equations. This is probably because
+they work slightly different, and hence move to the root using different routes
+
+
+C. Advanced backtracking (quadratic interpolation)
+Using analytical Jacobian
+Testing if the implementation works on the system of equations provided.
+I set dx=1e-09 and epsilon=0.001
+xstart is:
+1.00000000
+0.00000000
+Number of steps taken is: 40
+The root found is: 
+8.75415055
+0.00001141
+Here f(x) is (should be close to zero-vector)
+-0.00088590
+0.00004639
+Number of function calls: 217
+
+Testing if the implementation works on Rosenbrock.
+I set dx=1e-09 and epsilon=1e-06
+xstart is:
+0.00000000
+0.00000000
+Number of steps taken is: 208
+The root found is: 
+1.00000000
+1.00000000
+Here f(x) is
+0.00000000
+-0.00000000
+Number of function calls: 1727
+
+Testing if the implementation works on Himmelblau.
+I set dx=1e-09 and epsilon=1e-06
+xstart is:
+0.00000000
+0.00000000
+Number of steps taken is: 4
+The root found is: 
+-0.27084459
+-0.92303856
+Here f(x) is
+0.00000000
+-0.00000000
+Number of function calls: 13
+
+The number of steps taken is exactly the same as before
+This doesn't mean the advanced backtracking does not have an advantage
+over the simple one, but possibly just that the systems are too simple
+or the values of epsilon and dx are the dominant factor

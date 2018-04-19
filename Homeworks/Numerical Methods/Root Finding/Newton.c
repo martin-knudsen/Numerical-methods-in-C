@@ -63,7 +63,7 @@ void newton(
 		gsl_vector_scale(fx_minus, -1.0);
 		
 		
-		// find the jacobian in J
+		// find the jacobian in J either numerically or analytically
 		if(!ANALYTIC) jacobian_num(f,x,J,dx);
 		
 		qr_solve_system(J, fx_minus, deltax);
@@ -102,6 +102,80 @@ void newton(
 	}
 	printf("Number of steps taken is: %i\n", steps);
 
+	gsl_vector_free(x_plus);
+	gsl_vector_free(deltax);
+	gsl_vector_free(fx);
+	gsl_vector_free(fx_minus);
+	gsl_vector_free(fx_plus);
+	gsl_matrix_free(J);
+}
+
+void newton_quadratic_backtracking(
+	void f(gsl_vector* x, gsl_vector* fx, gsl_matrix* J),
+	gsl_vector* x,
+	double dx,
+	double epsilon, bool ANALYTIC
+){
+
+	int n = x->size;
+	gsl_vector* x_plus = gsl_vector_alloc(n);
+	gsl_vector* deltax = gsl_vector_alloc(n);
+	gsl_vector* fx_minus = gsl_vector_alloc(n);
+	gsl_vector* fx_plus = gsl_vector_alloc(n);
+	gsl_vector* fx = gsl_vector_alloc(n);
+	gsl_matrix* J = gsl_matrix_alloc(n,n);
+	
+	double fx_norm=INFINITY, deltax_norm=INFINITY;
+	double lambda, fx_plus_norm, g0, c, gtrial, g0_der; 
+	int steps=0;
+	while(fx_norm>epsilon && deltax_norm>dx){
+		steps++;
+		// find f(x)
+		f(x,fx,J);
+		// convert to -f(x) for matrix stuff
+		gsl_vector_memcpy(fx_minus, fx);
+		gsl_vector_scale(fx_minus, -1.0);
+		
+		
+		// find the jacobian in J either numerically or analytically
+		if(!ANALYTIC) jacobian_num(f,x,J,dx);
+		
+		qr_solve_system(J, fx_minus, deltax);
+		
+
+		// lambda start value
+		lambda=1.0;
+		
+		// make xplus (x+lambda*deltax);
+		gsl_vector_memcpy(x_plus,deltax);
+		gsl_vector_scale(x_plus,lambda);
+		gsl_vector_add(x_plus, x);
+		// now using that x_plus to create a new fx_plus
+		f(x_plus,fx_plus,J);
+		// finding the required vectornorms
+		fx_norm=gsl_blas_dnrm2(fx);
+		fx_plus_norm=gsl_blas_dnrm2(fx_plus);
+		deltax_norm=gsl_blas_dnrm2(deltax);
+		
+		while(fx_plus_norm>(1-lambda/2)*fx_norm 
+			  && lambda*deltax_norm>dx){
+			g0 = 1/2*fx_norm*fx_norm;
+			g0_der = -fx_norm*fx_norm;
+			gtrial = 1/2*fx_plus_norm*fx_plus_norm;
+			c = (gtrial - g0 - g0_der*lambda)/(lambda*lambda);
+			lambda=-g0_der/(2*c);
+			gsl_vector_memcpy(x_plus,deltax);
+			gsl_vector_scale(x_plus,lambda);
+			gsl_vector_add(x_plus, x);
+			f(x_plus,fx_plus,J);
+			fx_plus_norm=gsl_blas_dnrm2(fx_plus);
+		}
+		gsl_vector_scale(deltax,lambda);
+		gsl_vector_add(x, deltax);
+		f(x, fx,J);
+		fx_norm=gsl_blas_dnrm2(fx);
+	}
+	printf("Number of steps taken is: %i\n", steps);
 	gsl_vector_free(x_plus);
 	gsl_vector_free(deltax);
 	gsl_vector_free(fx);

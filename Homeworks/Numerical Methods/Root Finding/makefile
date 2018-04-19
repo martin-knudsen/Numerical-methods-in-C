@@ -3,7 +3,7 @@ LDLIBS = `gsl-config --libs`
  
 all: main
 
-	 ./main 
+	 ./main >out.txt
 	
 
 main: main.o Newton.o QR.o 
