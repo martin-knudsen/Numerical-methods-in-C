@@ -1,0 +1,28 @@
+A. Newton minimization
+Testing if the implementation works on Rosenbrock.
+I set dx=1e-09 and epsilon=1e-06
+xstart is:
+0.00000000
+0.00000000
+Number of steps taken is: 134427
+The root found is: 
+1.00000000
+1.00000000
+Here f(x) is
+-0.00000000
+-0.00000000
+Number of function calls: 2566053
+
+Testing if the implementation works on Himmelblau.
+I set dx=1e-09 and epsilon=1e-06
+xstart is:
+0.00000000
+0.00000000
+Number of steps taken is: 4
+The root found is: 
+-0.27084459
+-0.92303856
+Here f(x) is
+0.00000000
+-0.00000000
+Number of function calls: 13
