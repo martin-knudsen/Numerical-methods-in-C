@@ -4,6 +4,8 @@ LDLIBS = `gsl-config --libs`
 all: main
 
 	 ./main 
+
+	 gnuplot plot.gpi
 	
 
 main: main.o Newton.o QR.o 
