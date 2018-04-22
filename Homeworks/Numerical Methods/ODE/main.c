@@ -40,7 +40,7 @@ int main(void) {
 		gsl_vector_set(dydx,0,f0);
 		gsl_vector_set(dydx,1,f1);		
 	}
-	void orbital_equation(int n, double t,gsl_matrix* y, gsl_matrix* dydt) {
+	void orbital_equation(int n, double t,gsl_vector* y, gsl_vector* dydt) {
 	
 	(void)(t); 
 	double eps = 0.01;
@@ -55,7 +55,7 @@ int main(void) {
 	gsl_matrix* ylist=gsl_matrix_alloc(max+1,n);
 	gsl_vector* y=gsl_vector_alloc(n);
 
-	printf("A. rk21 midpoint euler stepper \n\n");
+	printf("A+B. rk21 midpoint euler stepper \n\n");
 	// initialize
 	gsl_vector_set(xlist,0,0.0);
 	gsl_matrix_set(ylist,0,0,1.0);
@@ -77,7 +77,7 @@ int main(void) {
 	printf("Number of steps taken: %i\n\n",k);
 
 
-	h=1e-3; acc=1e-6; eps=1e-6; b=M_PI*20; max=1e6;
+	h=1e-3; acc=1e-6; eps=1e-6; b=M_PI*20;
 	gsl_vector_set_zero(xlist);
 	gsl_matrix_set_zero(ylist);
 	gsl_vector_set(xlist,0,0.0);
@@ -101,19 +101,69 @@ int main(void) {
 	printf("The value I got for y0 in the original exercise was 0.700198\n");
 	printf("So this is very close. That was of course using gsl library rk8pd\n");
 	printf("algorithm which probably is more acurate than the simple implementation here\n");
+	printf("\n\n");
 
+	printf("C ODE as integrator \n\n");
 
+	double integral_function1(double x){
+		double a = 2.0;
+		int n = 1;
+		return pow(x,2*n)*exp(-x*x/(a*a));
+	}
 
+	double integral_function2(double x){
+		double a = 2.0;
+		int n = 3;
+		return pow(x,2*n)*exp(-x*x/(a*a));
+	}
 
+	double gaussian_theo(int n){
+		double a=2.0;
+		double fac=1;
+		double fac2=1;
+		for(int i=2;i<=n;i++){
+			fac*=i;
+		}
+		for(int i=2;i<=2*n;i++){
+			fac2*=i;
+		}
+		double integral = sqrt(M_PI)*fac2/fac*pow((a/2),2*n+1);
+		return integral;
+	}
+	n=1;
+	h=1e-3; acc=1e-6; eps=1e-6; b=100;
+	gsl_vector* xlist_integ=gsl_vector_alloc(max);
+	gsl_matrix* ylist_integ=gsl_matrix_alloc(max,n);
+	printf("Performing the gaussian integral x^2*exp(-(x/a)^2) from 0 to 50 (should be infinity)\n");
+	printf("eps=%g, acc=%g, max=%i, b=%g, hstart=%g\n",eps,acc,max,b,h);
+	printf("Startpoint set to:\n");
+	printf("x=%g\n",gsl_vector_get(xlist_integ,0));
+	printf("y set to: 0\n");
+	double result= integrator(integral_function1,n,xlist_integ,ylist_integ,b,h,acc,eps,max);
+	printf("And the integral is %g\n",result);
+	printf("Theoretically it should be if upper limit is infinity:\n");
+	printf("%g\n",gaussian_theo(1));
+	printf("\n");
 
-
-
-
-
-
+	n=1;
+	h=1e-3; acc=1e-6; eps=1e-6; b=1000;
+	gsl_vector_set_zero(xlist);
+	gsl_matrix_set_zero(ylist);
+	printf("Performing the gaussian integral x^6*exp(-(x/a)^2) from 0 to 1000 (should be infinity)\n");
+	printf("eps=%g, acc=%g, max=%i, b=%g, hstart=%g\n",eps,acc,max,b,h);
+	printf("Startpoint set to:\n");
+	printf("x=%g\n",gsl_vector_get(xlist_integ,0));
+	printf("y set to: 0\n");
+	result= integrator(integral_function2,n,xlist_integ,ylist_integ,b,h,acc,eps,max);
+	printf("And the integral is %g\n",result);
+	printf("Theoretically it should be if upper limit is infinity:\n");
+	printf("%g\n",gaussian_theo(3));
+	printf("\n");
 
 	gsl_vector_free(xlist);
 	gsl_matrix_free(ylist);
+	gsl_vector_free(xlist_integ);
+	gsl_matrix_free(ylist_integ);
 	gsl_vector_free(y);
 
 	return EXIT_SUCCESS;

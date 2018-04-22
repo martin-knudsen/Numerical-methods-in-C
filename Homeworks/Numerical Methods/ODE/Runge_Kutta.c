@@ -89,3 +89,15 @@ gsl_vector_free(dy);
 
 
 }/*return the number of entries in x list/ylist*/
+
+double integrator(double f(double x),
+int n,gsl_vector *xlist,gsl_matrix *ylist,
+double b,double h,double acc,double eps,int max){
+	void system(int n,double x,gsl_vector *y,gsl_vector *dydx){
+		double f0=f(x);
+		gsl_vector_set(dydx,0,f0);
+	}
+	int k=ode_driver(system,n,xlist,ylist,b,h,acc,eps,max);
+	printf("number of steps taken is: %i\n",k);
+	return gsl_matrix_get(ylist,k-1,0);
+}
