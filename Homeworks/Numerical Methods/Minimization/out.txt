@@ -1,28 +1,138 @@
 A. Newton minimization
 Testing if the implementation works on Rosenbrock.
-I set dx=1e-09 and epsilon=1e-06
+I set dx=1e-06 and epsilon=0.001
 xstart is:
 0.00000000
 0.00000000
-Number of steps taken is: 134427
+Number of steps taken is: 18
 The root found is: 
-1.00000000
-1.00000000
-Here f(x) is
--0.00000000
--0.00000000
-Number of function calls: 2566053
+0.99995166
+0.99990178
+Here df(x) is
+0.00051788
+-0.00030730
+Number of function calls: 67
 
 Testing if the implementation works on Himmelblau.
-I set dx=1e-09 and epsilon=1e-06
+I set dx=1e-06 and epsilon=0.001
 xstart is:
 0.00000000
 0.00000000
-Number of steps taken is: 4
+Number of steps taken is: 3
 The root found is: 
--0.27084459
--0.92303856
-Here f(x) is
+-0.27084639
+-0.92302828
+Here df(x) is
+0.00003137
+-0.00016467
+Number of function calls: 10
+We can see that this algorithm is much less efficient as
+the root finding one. Again this might be because of parameters
+the bigger dx. I have set alfa=0.51 it seems good for both functions 
+
+
+B. Quasi Newton with Broyden analytical gradient
+i)
+Testing if the implementation works on Rosenbrock.
+I set dx=1e-06 and epsilon=0.001
+xstart is:
 0.00000000
--0.00000000
-Number of function calls: 13
+0.00000000
+Number of steps taken is: 154
+The root found is: 
+0.99921240
+0.99842213
+Here df(x) is
+-0.00026350
+-0.00065637
+Number of function calls: 829
+
+Testing if the implementation works on Himmelblau.
+I set dx=1e-06 and epsilon=0.001
+xstart is:
+0.00000000
+0.00000000
+Number of steps taken is: 17
+The root found is: 
+2.99999145
+2.00002380
+Here df(x) is
+-0.00015667
+0.00063812
+Number of function calls: 84
+Something very interesting happened when using Broyden:
+The minima for Himmelblau found is a different one, but still correct
+since Himmelblau has several minima.
+
+iii) Comparison
+If we compare explicit hessian to Broyden, we see that 
+Explicit Hessian uses many fewer steps than updating without Hessian
+This does no nessesarily mean that classical Newton is better
+actually possibly broyden is still faster because it doesn't 
+solve the linear system of equations to find delta x at each step and doesn't
+calculate the hessian each time the function is run. 
+If we compare to the root finding algorithms they take even less steps
+and seem to be the most effective overall.
+Again however it is difficult to say overall because it might be a parameter issue
+
+iv) Testing at fit problem
+I have found the gradient of the master funciton numerically
+I set dx=1e-06 and epsilon=0.001
+xstart is (qualified guess from data):
+5.00000000
+0.00000000
+5.00000000
+Number of steps taken is: 148
+The root found is: 
+3.55702352
+1.23203526
+3.20501791
+Here df(x) is
+-0.00020340
+-0.00018965
+-0.00102977
+Number of function calls: 5774
+
+
+C. downhill simplex method
+Testing if the implementation works on Rosenbrock.
+I set epsilon=0.001
+I set the simplex to some "random" values:
+0	1	
+0.34	5	
+-10	0	
+The root found is: 
+0.999784	0.999574	
+The number of steps: 55
+Number of function calls: 106
+
+Testing if the implementation works on Himmelblau.
+I set epsilon=0.001
+I set the simplex to some "random" values:
+0	1	
+0.34	5	
+-10	0	
+The root found is: 
+-3.77935	-3.28376	
+The number of steps: 41
+Number of function calls: 80
+Again we have another value for the minimum, but it's 
+just another of the 5 minimums of the function!
+
+Testing if the implementation works on the fit.
+I set epsilon=0.001
+I set the simplex to some "random" values:
+5	0	5	
+10	0.1	10	
+3	0.5	5	
+7	0.4	3	
+The root found is: 
+3.55687	1.2319	3.20562	
+The number of steps: 76
+Number of function calls: 135
+Here df(x) is
+-0.00199144
+-0.00093039
+-0.00000896
+So it is almost the same solution as before 
+

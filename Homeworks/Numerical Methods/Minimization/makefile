@@ -3,14 +3,14 @@ LDLIBS = `gsl-config --libs`
  
 all: main
 
-	 ./main 
+	 ./main > out.txt
 
 	 gnuplot plot.gpi
 	
 
-main: main.o Newton.o QR.o 
+main: main.o Newton.o QR.o downhill_simplex.o
 
-main.o Newton.o QR.o: Newton.h QR.h 
+main.o Newton.o QR.o downhill_simplex.o: Newton.h QR.h downhill_simplex.h
 
 .Phony: clean 
 clean: 

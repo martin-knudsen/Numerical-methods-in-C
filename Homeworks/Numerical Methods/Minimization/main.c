@@ -151,6 +151,8 @@ int main(void) {
 	return fx;
 	}
 	
+
+
 	printf("A. Newton minimization\n");
 	
 	// Rosenbrock
@@ -305,103 +307,131 @@ int main(void) {
 
 
 	// C
-	/*
+	
 	printf("C. downhill simplex method\n");
-	// Rosenbrock
 	n=2;
+	double** simplex= (double **) malloc ((n+1) * sizeof(double *));
+	for (int i=0;i<=n;i++) {
+    simplex[i] = (double *) malloc (n * sizeof(double));
+	}
+	// Rosenbrock
+	
 	function_calls = 0;
 	printf("Testing if the implementation works on Rosenbrock.\n");
-	gsl_vector_set(x,0,0);
-	gsl_vector_set(x,1,0);
+	simplex[0][0]=0.0;
+	simplex[0][1]=1.0;
+	simplex[1][0]=0.34;
+	simplex[1][1]=5.0;
+	simplex[2][0]=-10;
+	simplex[2][1]=0.0;
+	printf("I set epsilon=%g\n",epsilon);
+	printf("I set the simplex to some \"random\" values:\n");
+	for(int i=0; i<n+1;i++){
+		for(int j=0; j<n;j++){printf("%g\t",simplex[i][j]);}
+		printf("\n");
+	}
+	int k= downhill_simplexx(Rosenbrock_f_downhill,simplex,n,epsilon);
 	
-	printf("I set dx=%g and epsilon=%g\n",dx, epsilon);
-	printf("xstart is:\n");
-	printv(x);
-
-	int downhill_simplex(Rosenbrock_f_downhill,double**simplex,int d,epsilon);
-
 	printf("The root found is: \n");
-	printv(x);
-	printf("Here df(x) is\n");
-	Rosenbrock_f(x,df,H);
-	printv(df);
+	for(int i=0; i<n;i++){
+		printf("%g\t",simplex[0][i]);
+	}
+	printf("\n");
+	printf("The number of steps: %i\n",k);
 	printf("Number of function calls: %i\n",function_calls);
 	printf("\n");
-
+	
 	// Himmelblau
+	
 	function_calls = 0;
 	printf("Testing if the implementation works on Himmelblau.\n");
-	gsl_vector_set(x,0,0);
-	gsl_vector_set(x,1,0);
-	
-	printf("I set dx=%g and epsilon=%g\n",dx, epsilon);
-	printf("xstart is:\n");
-	printv(x);
-
-	int downhill_simplex(Himmelblau_f_downhill,double**simplex,n,epsilon);
-
-	printf("The root found is: \n");
-	printv(x);
-	printf("Here df(x) is\n");
-	Himmelblau_f(x,df,H);
-	printv(df);
-	printf("Number of function calls: %i\n",function_calls);
-	printf("Something very interesting happened when using Broyden:\n"
-			"The minima for Himmelblau found is a different one, but still correct\n"
-			"since Himmelblau has several minima.\n");
-
-	printf("\n");
-	printf("iii) Comparison\n"
-			"If we compare explicit hessian to Broyden, we see that \n"
-			"Explicit Hessian uses many fewer steps than updating without Hessian\n"
-			"This does no nessesarily mean that classical Newton is better\n"
-			"actually possibly broyden is still faster because it doesn't \n"
-			"solve the linear system of equations to find delta x at each step and doesn't\n"
-			"calculate the hessian each time the function is run. \n"
-			"If we compare to the root finding algorithms they take even less steps\n"
-			"and seem to be the most effective overall.\n"
-			"Again however it is difficult to say overall because it might be a parameter issue\n");
-
-	n=3;
-	printf("\n");
-	printf("iv) Testing at fit problem\n");
-
-	printf("I have found the gradient of the master funciton numerically\n");
-	function_calls = 0;
-	gsl_vector_set(x_fit,0,5);
-	gsl_vector_set(x_fit,1,0);
-	gsl_vector_set(x_fit,2,5);
-	
-	printf("I set dx=%g and epsilon=%g\n",dx, epsilon);
-	printf("xstart is (qualified guess from data):\n");
-	printv(x_fit);
-
-	int downhill_simplex(master_fit_downhill,double**simplex,int d,double simplex_size_goal);
-	printf("The root found is: \n");
-	printv(x_fit);
-	printf("Here df(x) is\n");
-	gradient_num(master_fit,x_fit,df_fit,dx);
-	printv(df_fit);
-	printf("Number of function calls: %i\n",function_calls);
-	/*
-	double tstart=0.0, tslut=10.0, deltat=tslut/200;
-	double A=gsl_vector_get(x_fit,0);
-	double B=gsl_vector_get(x_fit,1);
-	double T=gsl_vector_get(x_fit,2);
-	double ft;
-	FILE* fitdata = fopen("fit.txt","w+");
-
-	for(double t=0;t<tslut;t+=deltat){
-		ft=A*exp(-t/T)+B;
-		fprintf(fitdata, "%g\t%g\n",t, ft);
+	simplex[0][0]=0.0;
+	simplex[0][1]=1.0;
+	simplex[1][0]=0.34;
+	simplex[1][1]=5.0;
+	simplex[2][0]=-10;
+	simplex[2][1]=0.0;
+	printf("I set epsilon=%g\n",epsilon);
+	printf("I set the simplex to some \"random\" values:\n");
+	for(int i=0; i<n+1;i++){
+		for(int j=0; j<n;j++){printf("%g\t",simplex[i][j]);}
+		printf("\n");
 	}
-	fclose(fitdata);
-	*/
+	k= downhill_simplexx(Himmelblau_f_downhill,simplex,n,epsilon);
+	
+	printf("The root found is: \n");
+	for(int i=0; i<n;i++){
+		printf("%g\t",simplex[0][i]);
+	}
+	printf("\n");
+	printf("The number of steps: %i\n",k);
+	printf("Number of function calls: %i\n",function_calls);
+	printf("Again we have another value for the minimum, but it's \n"
+		"just another of the 5 minimums of the function!\n");
+	printf("\n");
+
+	// Master fit
+	n=3;
+	function_calls = 0;
+	printf("Testing if the implementation works on the fit.\n");
+	double** simplex_fit= (double **) malloc ((n+1) * sizeof(double *));
+	for (int i=0;i<=n;i++) {
+    simplex_fit[i] = (double *) malloc (n * sizeof(double));
+	}
+
+	simplex_fit[0][0]=5.0;
+	simplex_fit[0][1]=0.0;
+	simplex_fit[0][2]=5.0;
+	simplex_fit[1][0]=10.0;
+	simplex_fit[1][1]=0.1;
+	simplex_fit[1][2]=10.0;
+	simplex_fit[2][0]=3;
+	simplex_fit[2][1]=0.5;
+	simplex_fit[2][2]=5.0;
+	simplex_fit[3][0]=7;
+	simplex_fit[3][1]=0.4;
+	simplex_fit[3][2]=3;
+	printf("I set epsilon=%g\n",epsilon);
+	printf("I set the simplex to some \"random\" values:\n");
+	for(int i=0; i<n+1;i++){
+		for(int j=0; j<n;j++){printf("%g\t",simplex_fit[i][j]);}
+		printf("\n");
+	}
+	k= downhill_simplexx(master_fit_downhill,simplex_fit,n,epsilon);
+	
+	printf("The root found is: \n");
+	for(int i=0; i<n;i++){
+		printf("%g\t",simplex_fit[0][i]);
+	}
+	printf("\n");
+	printf("The number of steps: %i\n",k);
+	printf("Number of function calls: %i\n",function_calls);
+	gsl_vector_set(x_fit,0,simplex_fit[0][0]);
+	gsl_vector_set(x_fit,1,simplex_fit[0][1]);
+	gsl_vector_set(x_fit,2,simplex_fit[0][2]);
+
+	gradient_num(master_fit,x_fit,df_fit,dx);
+	printf("Here df(x) is\n");
+	printv(df_fit);
+	printf("So it is almost the same solution as before \n");
+	printf("\n");
+
 	gsl_vector_free(x);
 	gsl_vector_free(df);
 	gsl_vector_free(x_fit);
 	gsl_vector_free(df_fit);
 	gsl_matrix_free(H);		
+
+	for (int i=0;i<=2;i++) {
+    	free (simplex[i]);
+  	}
+	free(simplex);
+
+	for (int i=0;i<=3;i++) {
+    	free (simplex_fit[i]);
+  	}
+	free(simplex_fit);
+
 
 	return EXIT_SUCCESS;
 }

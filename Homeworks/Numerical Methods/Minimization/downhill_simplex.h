@@ -23,6 +23,6 @@ void simplex_initiate(
 double fun(double *),double **simplex,double *f_values,int d,
 int *hi,int *lo,double *centroid);
 
-int downhill_simplex(
+int downhill_simplexx(
 double F(double *),double**simplex,int d,double simplex_size_goal);
 #endif
