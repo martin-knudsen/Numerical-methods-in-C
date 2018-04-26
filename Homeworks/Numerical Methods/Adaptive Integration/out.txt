@@ -1,0 +1,55 @@
+A+B. rk21 midpoint euler stepper 
+
+Testing on the system 
+dydx_0= y1*x
+dydx_1= -y0
+eps=0.01, acc=1e-26, max=1000000, b=7, hstart=0.35
+Startpoint set to:
+x=0y set to:
+1.000000
+0.000000
+And the solution at y(7):
+2.049277
+-0.031370
+Number of steps taken: 290
+
+Testing on the system from the orbital equation exercise in PP
+with eps=0.01 (relativistic correction)
+dydx_0= y1
+dydx_1= 1-y0+eps*y0*y0
+eps=1e-06, acc=1e-06, max=1000000, b=62.8319, hstart=0.001
+Startpoint set to:
+x=0y set to:
+1.000000
+0.500000
+And the solution at y(62.8319):
+0.700930
+0.395204
+Number of steps taken: 443232
+The value I got for y0 in the original exercise was 0.700198
+So this is very close. That was of course using gsl library rk8pd
+algorithm which probably is more acurate than the simple implementation here
+
+
+C ODE as integrator 
+
+Performing the gaussian integral x^2*exp(-(x/a)^2) from 0 to 50 (should be infinity)
+eps=1e-06, acc=1e-06, max=1000000, b=100, hstart=0.001
+Startpoint set to:
+x=0
+y set to: 0
+number of steps taken is: 43915
+And the integral is 3.54491
+Theoretically it should be if upper limit is infinity:
+3.54491
+
+Performing the gaussian integral x^6*exp(-(x/a)^2) from 0 to 1000 (should be infinity)
+eps=1e-06, acc=1e-06, max=1000000, b=1000, hstart=0.001
+Startpoint set to:
+x=0
+y set to: 0
+number of steps taken is: 317725
+And the integral is 212.694
+Theoretically it should be if upper limit is infinity:
+212.694
+
