@@ -1,0 +1,57 @@
+A. Recursive adaptive integration
+
+Integrating sqrt(x) from 0 to 1
+Absolute accuracy:0.001, relative accuracy: 1e-06
+Theoretical=2/3, Calculated=0.666954
+Number of function calls: 16
+
+Integrating 1/sqrt(x) from 0 to 1
+Absolute accuracy:0.001, relative accuracy: 1e-06
+Theoretical=2, Calculated=1.99996
+Number of function calls: 8576
+
+Integrating ln(x)/sqrt(x) from 0 to 1
+Absolute accuracy:0.001, relative accuracy: 1e-06
+Theoretical=-4, Calculated=-3.99997
+Number of function calls: 80556
+
+Integrating 4*sqrt(1-(1-x)^2) from 0 to 1
+Absolute accuracy:1e-18, relative accuracy: 1e-18
+Theoretical=pi, Calculated=3.14159265358979311600
+Number of function calls: 40262692
+
+
+B. Infinite limits
+
+Integrating x^2*exp(-x^2/4) from 0 to infinity
+Absolute accuracy:0.001, relative accuracy: 1e-06
+Theoretical=3.54491, Calculated=3.5449
+Number of function calls: 96
+GSL_result is:3.54491
+Number of function calls: 105
+
+Integrating x^6*exp(-x^2/4) from 0 to infinity
+Absolute accuracy:0.001, relative accuracy: 1e-06
+Theoretical=212.694, Calculated=212.694
+Number of function calls: 672
+GSL_result is:212.694
+Number of function calls: 105
+
+As one can see the gsl library was more effective in the second case
+but not in the first. It uses the Gauss-Kronrod 21 algorithm with 
+variable transformations as I did. So perhaps their algorithm is best for complicated
+functions
+
+C. Clenshaw–Curtis variable transformation
+
+Integrating 1/sqrt(x) from 0 to 1
+Absolute accuracy:0.001, relative accuracy: 1e-06
+Theoretical=2, Calculated=2
+Number of function calls: 24
+Integrating ln(x)/sqrt(x) from 0 to 1
+Absolute accuracy:0.001, relative accuracy: 1e-06
+Theoretical=-4, Calculated=-3.99997
+Number of function calls: 128
+
+As one can see it is actually many times faster than the
+simple adaptive one we made before for integrations diverging at the limit.

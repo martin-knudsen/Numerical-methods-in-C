@@ -1,9 +1,7 @@
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
-#include <gsl/gsl_matrix.h>
-#include <gsl/gsl_vector.h>
-#include <gsl/gsl_blas.h>
+#include "Integrator.h"
 #include <assert.h>
 
 /* These methods are taken from Dmitri Fedorovs lecture notes 
@@ -88,4 +86,21 @@ double adapt(
 		f3=old_f(a+4*(b-a)/6);
 		return adapt24(old_f,old_f,a,b,acc,eps,f2,f3,nrec);}
 	
+}
+
+double clenshaw_curtis(double old_f(double),double a_old,double b_old,double acc,double eps){
+	int nrec=0;
+	double f2, f3,a,b;
+	double f_clenshaw_curtis(double t) {
+				// Here the terms are more complicated because of rescaling from
+				// -1 to 1 to 0 to 1.
+				double x=(a_old+b_old)/2+(a_old-b_old)/2*cos(t);
+				double result=old_f(x)*sin(t)*(b_old-a_old)/2;
+				return result;
+			}
+	a=0; b=M_PI;
+	f2=f_clenshaw_curtis(a+2*(b-a)/6);
+	f3=f_clenshaw_curtis(a+4*(b-a)/6);
+	double res=adapt24(f_clenshaw_curtis,old_f,a,b,acc,eps,f2,f3,nrec);
+	return res;
 }

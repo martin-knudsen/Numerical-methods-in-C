@@ -3,11 +3,11 @@ LDLIBS = `gsl-config --libs`
  
 all: main
 
-	 ./main 
+	 ./main > out.txt
 
-main: main.o Integrator.o Runge_Kutta.o 
+main: main.o Integrator.o
 
-main.o Integrator.o Runge_Kutta.o: Integrator.h Runge_Kutta.h 
+main.o Integrator.o: Integrator.h 
 
 .Phony: clean 
 clean: 

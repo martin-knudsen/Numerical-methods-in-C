@@ -2,33 +2,10 @@
 #include <assert.h>
 #include <math.h>
 #include <stdlib.h>
-#include <stdbool.h>
-#include <gsl/gsl_matrix.h>
-#include <gsl/gsl_vector.h>
-#include <gsl/gsl_blas.h>
 #include <gsl/gsl_integration.h>
-#include "Runge_Kutta.h"
 #include "Integrator.h"
 #define RND (double)rand()/RAND_MAX
 #define FMT "%7.6f" //format of print "7 width, 3 digits after comma" 
-
-
-// inspired by Dmitri Fedorovs print implementation
-void printm(gsl_matrix* A) {
-	// iterating over all rows and columns 
-	for(int i=0;i<A->size1;i++){
-		for(int j=0;j<A->size2;j++) {
-			printf(FMT,gsl_matrix_get(A,i,j));
-		}
-		printf("\n");}
-}
-
-void printv(gsl_vector *A){
-	for(int i=0;i<A->size;i++){
-		printf(FMT,gsl_vector_get(A,i));
-		printf("\n");
-	}
-}
 
 int main(void) {
 	// part A 
@@ -117,7 +94,7 @@ int main(void) {
 
 
 	double result5 = adapt(integral_function1,a,b,acc,eps);
-	printf("Integrating x^2*exp(-x^2/4 from 0 to infinity\n");
+	printf("Integrating x^2*exp(-x^2/4) from 0 to infinity\n");
 	printf("Absolute accuracy:%g, relative accuracy: %g\n",acc,eps);
 	printf("Theoretical=%g, Calculated=%g\n",gaussian_theo(1),result5);
 	printf("Number of function calls: %i\n",calls); calls=0;
@@ -159,11 +136,29 @@ int main(void) {
 	gsl_integration_workspace_free (workspace2);
 
 	printf("As one can see the gsl library was more effective in the second case\n"
-		"but not in the fourth. It uses the Gauss-Kronrod 21 algorithm with \n"
+		"but not in the first. It uses the Gauss-Kronrod 21 algorithm with \n"
 		"variable transformations as I did. So perhaps their algorithm is best for complicated\n"
 		"functions\n\n");
 
 	// C
-	printf("C. Clenshaw–Curtis variable transformation\n");
+	
+	printf("C. Clenshaw–Curtis variable transformation\n\n");
+
+	a=0; b=1;acc=1e-3,eps=1e-6; calls=0;
+	double result7 = clenshaw_curtis(f2,a,b,acc,eps);
+	printf("Integrating 1/sqrt(x) from 0 to 1\n");
+	printf("Absolute accuracy:%g, relative accuracy: %g\n",acc,eps);
+	printf("Theoretical=2, Calculated=%g\n",result7);
+	printf("Number of function calls: %i\n",calls); calls=0;
+	
+	double result8 = clenshaw_curtis(f3,a,b,acc,eps);
+	printf("Integrating ln(x)/sqrt(x) from 0 to 1\n");
+	printf("Absolute accuracy:%g, relative accuracy: %g\n",acc,eps);
+	printf("Theoretical=-4, Calculated=%g\n",result8);
+	printf("Number of function calls: %i\n\n",calls); calls=0;
+
+	printf("As one can see it is actually many times faster than the\n"
+		"simple adaptive one we made before for integrations diverging at the limit.\n");
+
 	return EXIT_SUCCESS;
 }
