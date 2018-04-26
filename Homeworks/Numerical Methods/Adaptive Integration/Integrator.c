@@ -12,7 +12,7 @@
  the value of the integral evaluated on the limits within the tolerances, and if 
  it is not within toleranced it recures until it has found the answer. 
  */
-double adapt24(double f(double),double a,double b,
+double adapt24(double f(double),double old_f(double),double a,double b,
 	double acc,double eps,double f2,double f3,int nrec){
 	// upper limit on how many recursions are possible until if will just accept the error
 	assert(nrec<1000000);
@@ -30,16 +30,62 @@ double adapt24(double f(double),double a,double b,
 	// update the absolute tolerance and try again on each new subinterval. This is the recursion
 	// part
 	else{
-		double Q1=adapt24(f,a,(a+b)/2,acc/sqrt(2.),eps,f1,f2,nrec+1);
-		double Q2=adapt24(f,(a+b)/2,b,acc/sqrt(2.),eps,f3,f4,nrec+1);
+		double Q1=adapt24(f,old_f,a,(a+b)/2,acc/sqrt(2.),eps,f1,f2,nrec+1);
+		double Q2=adapt24(f,old_f,(a+b)/2,b,acc/sqrt(2.),eps,f3,f4,nrec+1);
 	// return the sum of the integral of both subintervals
 	return Q1+Q2;}
 }
 
-// The first step of calculating the function values at f2 and f3
+// The first step of calculating the function values at f2 and f3. This has been changed to take infinite values
+// by using variable transformation
 double adapt(
-	double f(double),double a,double b,double acc,double eps){
+	double old_f(double),double a_old,double b_old,double acc,double eps){
 	// Rescaling the points x2 and x3 and finding the function values
-	double f2=f(a+2*(b-a)/6),f3=f(a+4*(b-a)/6);int nrec=0;
-	return adapt24(f,a,b,acc,eps,f2,f3,nrec);
+	int nrec=0;
+	double f2, f3, x, result, a,b;
+
+	if(isinf(a_old)!=0){
+		if(isinf(b_old)!=0){
+			double f_inf_inf(double t) {
+				x=t/(1-t*t);
+				result=old_f(x)*(1+t*t)/((1-t*t)*(1-t*t));
+				return result;
+			}
+			a=-1; b=1;
+			f2=f_inf_inf(a+2*(b-a)/6);
+			f3=f_inf_inf(a+4*(b-a)/6);
+			return adapt24(f_inf_inf,old_f,a,b,acc,eps,f2,f3,nrec);
+		}
+		else{
+
+			double f_inf_b(double t) {
+				x=t/(b_old-(1-t)/t);
+				result=old_f(x)/(t*t);
+				return result;
+			}
+			a=0; b=1;
+			f2=f_inf_b(a+2*(b-a)/6);
+			f3=f_inf_b(a+4*(b-a)/6);
+			return adapt24(f_inf_b,old_f,a,b,acc,eps,f2,f3,nrec);
+
+		}
+	}
+
+	else if(isinf(b_old)!=0){
+		double f_a_inf(double t) {
+				x=a_old+(1-t)/t;
+				result=old_f(x)/(t*t);
+				return result;
+			}
+			a=0; b=1;
+			f2=f_a_inf(a+2*(b-a)/6);
+			f3=f_a_inf(a+4*(b-a)/6);
+			return adapt24(f_a_inf,old_f,a,b,acc,eps,f2,f3,nrec);
+	}
+	else{
+		a=a_old; b=b_old;
+		f2=old_f(a+2*(b-a)/6);
+		f3=old_f(a+4*(b-a)/6);
+		return adapt24(old_f,old_f,a,b,acc,eps,f2,f3,nrec);}
+	
 }
