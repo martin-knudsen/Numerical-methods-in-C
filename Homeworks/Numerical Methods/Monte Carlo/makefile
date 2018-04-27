@@ -4,10 +4,11 @@ LDLIBS = `gsl-config --libs`
 all: main
 
 	 ./main 
+	 gnuplot plot.gpi
 
-main: main.o Monte_Carlo.o Integrator.o 
+main: main.o Monte_Carlo.o Integrator.o QR.o QR_ls.o
 
-main.o Monte_Carlo.o Integrator.o: Monte_Carlo.h Integrator.h 
+main.o Monte_Carlo.o Integrator.o QR.o QR_ls.o: Monte_Carlo.h Integrator.h QR.h QR_ls.h 
 
 .Phony: clean 
 clean: 

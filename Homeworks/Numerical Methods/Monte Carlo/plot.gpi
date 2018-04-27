@@ -2,11 +2,10 @@ set term svg background rgb "white"
 set terminal svg
 set output "plot.svg"
 set key out 
-set xlabel("t")
-set ylabel("y")
-set title "Fit of F(t)=A*exp(-t/T)+B to Dmitris data"
+set xlabel("N")
+set ylabel("Error")
+set title "least squares fit of Error(N)=-c_1*1/sqrt(N) to seen errors"
 
-plot "data.txt" with errorbars title "Data"\
-,"fit.txt" title "Fit using minimization" with lines\
-
+plot "error_data.txt" title "Data",\
+"errorfit_data.txt" with lines title "Fit"
 
