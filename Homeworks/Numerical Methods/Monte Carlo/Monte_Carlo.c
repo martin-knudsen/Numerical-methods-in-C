@@ -2,6 +2,7 @@
 #include <math.h>
 #include <stdlib.h>
 #include "Monte_Carlo.h"
+#include "Integrator.h"
 #include <assert.h>
 #define  RND (double )rand()/RAND_MAX // just for a random number between 0 and 1
 
@@ -51,4 +52,33 @@ double f(double *x),int N,double *result,double *error){
 	// the error is just the squareroot of the variance
 	*error=sqrt(var/N)*V;
 }
+
+double adapt_2D(double old_f(double x, double y),double c_f(double),
+ double d_f(double), double a_old,double b_old,double acc,double eps){
+	// Rescaling the points x2 and x3 and finding the function values
+	int nrec=0;
+	double f2, f3,a,b, result;
+
+	double f_outer(double y) {
+				double f_inner(double x){
+					return old_f(x,y);
+				}
+				nrec=0;
+				a=c_f(y); 
+				b=d_f(y);
+				f2=f_inner(a+2*(b-a)/6);
+				f3=f_inner(a+4*(b-a)/6);
+				result=adapt24(f_inner,old_f,a,b,acc,eps,f2,f3,nrec);
+				return result;
+			}
+
+	a=a_old; b=b_old;
+	f2=f_outer(a+2*(b-a)/6);
+
+	f3=f_outer(a+4*(b-a)/6);
+	result = adapt24(f_outer,old_f,a,b,acc,eps,f2,f3,nrec);
+	return result;
+
+}
+	
 

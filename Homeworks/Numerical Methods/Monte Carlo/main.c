@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <gsl/gsl_integration.h>
 #include "Integrator.h"
+#include "Monte_Carlo.h"
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_matrix.h>
 #include "QR.h"
@@ -110,6 +111,25 @@ int main(void) {
 	// part C
 	printf("C. 2D adaptive integrator\n\n");
 
+	double c_lim(double y){
+		return y;
+	}
+	double d_lim(double y){
+		return y*y*y;
+	}
+	double a4=1.0, b4=2.0;
+
+	double two_D_function(double x,double y){
+		return exp(x/y);
+	}
+
+	double two_D_function2(double x,double y){
+		return 4*x*y-y*y*y;
+	}
+	double acc=1e-5, eps=1e-5; 
+	result = adapt_2D(two_D_function,c_lim,d_lim,a4,b4,acc,eps);
+
+	printf("result:%g\n",result);
 
 	return EXIT_SUCCESS;
 }
