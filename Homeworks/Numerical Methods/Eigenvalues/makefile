@@ -3,11 +3,13 @@ LDLIBS = `gsl-config --libs`
  
 all: main
 
-	\time -f "%U" -ao time.txt ./main >out.txt
+	\time -f "%U" -ao time.txt ./main
 
-main: main.o jacobi_cyclic.o jacobi_eig_by_eig.o jacobi_classic.o
+	gnuplot plot.gpi
 
-main.o jacobi_cyclic.o jacobi_eig_by_eig.o jacobi_classic.o: jacobi_cyclic.h jacobi_eig_by_eig.h jacobi_classic.h
+main: main.o jacobi_cyclic.o jacobi_eig_by_eig.o jacobi_classic.o QR.o QR_ls.o
+
+main.o jacobi_cyclic.o jacobi_eig_by_eig.o jacobi_classic.o QR.o QR_ls.o: jacobi_cyclic.h jacobi_eig_by_eig.h jacobi_classic.h QR.h QR_ls.h
 
 .Phony: clean 
 clean: 

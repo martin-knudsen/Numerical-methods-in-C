@@ -18,8 +18,8 @@ int jacobi_classic(gsl_matrix* A,gsl_vector* e,gsl_matrix* V, int* number_rot){
 	gsl_vector* indices = gsl_vector_alloc(n);
 	double new_el;
 	double old_el;
-	for(int i=0; i<n-1; i++){
-		old_el = -1e8;		
+	for(int i=0; i<n; i++){
+		old_el = -INFINITY;		
 		for(int j=i+1; j<n; j++){
 			new_el = gsl_matrix_get(A, i, j);
 			if(new_el>old_el) {
@@ -39,9 +39,6 @@ int jacobi_classic(gsl_matrix* A,gsl_vector* e,gsl_matrix* V, int* number_rot){
 	// iterating over all upper diagonal elements of A in a cyclic fashion
 	for(p=0;p<n-1;p++){
 		q = gsl_vector_get(indices, p);
-
-		// keeping track of the used rotations
-		*number_rot = *number_rot+1;
 
 		// Save all the old A values at p and q used in phi
 		double app=gsl_vector_get(e,p);
@@ -66,7 +63,7 @@ int jacobi_classic(gsl_matrix* A,gsl_vector* e,gsl_matrix* V, int* number_rot){
 			gsl_vector_set(e,p,app1);
 			gsl_vector_set(e,q,aqq1);
 			gsl_matrix_set(A,p,q,0.0);
-
+			*number_rot = *number_rot+1;
 			// set the new value of p and q rows and columns at once
 			// according to nr 2 and 3 from (3.9)
 			for(int i=0;i<p;i++){

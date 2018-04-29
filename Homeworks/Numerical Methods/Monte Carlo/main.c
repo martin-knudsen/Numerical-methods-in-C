@@ -185,5 +185,10 @@ int main(void) {
 	printf("Absolute accuracy: %g, relative accuracy: %g\n",acc,eps);
 	printf("Theoretical result: %7.10f, calculated:%7.10f\n\n",theo,result);
 
+	gsl_vector_free(x);
+	gsl_vector_free(y);
+	gsl_vector_free(dy);
+	gsl_matrix_free(COV);
+	gsl_vector_free(c);
 	return EXIT_SUCCESS;
 }

@@ -138,3 +138,57 @@ Command terminated by signal 11
 0.00
 0.00
 0.00
+0.00
+0.00
+Command terminated by signal 6
+0.00
+Command terminated by signal 6
+0.00
+Command terminated by signal 6
+0.00
+Command terminated by signal 6
+0.00
+Command terminated by signal 6
+0.00
+Command terminated by signal 6
+0.00
+0.00
+0.00
+1.48
+Command terminated by signal 2
+12.40
+0.00
+0.00
+0.01
+0.00
+0.01
+0.01
+0.00
+0.01
+0.01
+0.01
+0.01
+0.01
+Command terminated by signal 2
+3.17
+0.01
+0.00
+0.01
+Command terminated by signal 2
+1.59
+Command terminated by signal 2
+1.21
+0.00
+0.00
+0.00
+0.00
+0.01
+0.01
+0.00
+0.00
+0.00
+0.01
+0.01
+0.01
+0.01
+0.00

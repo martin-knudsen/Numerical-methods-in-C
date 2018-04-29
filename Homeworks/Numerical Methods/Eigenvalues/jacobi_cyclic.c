@@ -21,7 +21,7 @@ int jacobi_cyclic(gsl_matrix* A,gsl_vector* e,gsl_matrix* V, int* number_rot){
 	// iterating over all upper diagonal elements of A in a cyclic fashion
 	for(p=0;p<n;p++)for(q=p+1;q<n;q++){
 		// keeping track of the used rotations
-		*number_rot = *number_rot+1;
+		
 
 		// Save all the old A values at p and q used in phi
 		double app=gsl_vector_get(e,p);
@@ -39,13 +39,13 @@ int jacobi_cyclic(gsl_matrix* A,gsl_vector* e,gsl_matrix* V, int* number_rot){
 		double aqq1=s*s*app+2*s*c*apq+c*c*aqq;
 
 		// If there is any change in the diagonal elements at q and p do
-		if(app1!=app||aqq1!=aqq){changed=1; // mark that there was a change
+		if(app!=app1||aqq!=aqq1){changed=1; // mark that there was a change
 			// update the new eigenvalues and set the appropriate zero'ed 
 			// part of A, A_pq to zero
 			gsl_vector_set(e,p,app1);
 			gsl_vector_set(e,q,aqq1);
 			gsl_matrix_set(A,p,q,0.0);
-
+			*number_rot = *number_rot+1;
 			// set the new value of p and q rows and columns at once
 			// according to nr 2 and 3 from (3.9)
 			for(int i=0;i<p;i++){

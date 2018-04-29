@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <assert.h>
 #include <math.h>
+#include <time.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include <gsl/gsl_matrix.h>
@@ -11,6 +12,7 @@
 #include "jacobi_cyclic.h"
 #include "jacobi_eig_by_eig.h"
 #include "jacobi_classic.h"
+#include "QR_ls.h"
 
 // inspired by Dmitri Fedorovs print implementation
 void printm(gsl_matrix *A){
@@ -30,9 +32,10 @@ void printv(gsl_vector *A){
 }
 
 
+
 int main() {
 		
-	const int n = 3;
+	int n = 3;
 
 	gsl_matrix* A = gsl_matrix_alloc(n, n);
 	gsl_matrix* A_clone = gsl_matrix_alloc(n, n);
@@ -74,6 +77,72 @@ int main() {
 	gsl_blas_dgemm(CblasNoTrans, CblasNoTrans, 1.0, A_clone, V, 0.0, A);
 	gsl_blas_dgemm(CblasTrans, CblasNoTrans, 1.0, V, A, 0.0, VTAV);
 	printm(VTAV);
+
+	clock_t start, end;
+	double cpu_time_used;
+
+	int n_start=2, n_max=20, n_delta=1, m=1;
+	n=(n_max-n_start)/n_delta+1;
+	gsl_vector* x = gsl_vector_alloc(n);
+	gsl_vector* y = gsl_vector_alloc(n);
+	gsl_vector* dy = gsl_vector_alloc(n);
+	gsl_vector* c = gsl_vector_alloc(m);
+	gsl_matrix* COV = gsl_matrix_alloc(m, m);
+	FILE* timedata=fopen("cyclic_time.txt","w+");
+	int i=0;
+	for(n=n_start;n<=n_max;n+=n_delta) {
+		gsl_matrix* A_time = gsl_matrix_alloc(n, n);
+		gsl_matrix* V_time = gsl_matrix_alloc(n, n);
+		gsl_vector* e_time = gsl_vector_alloc(n);
+		for(int i=0; i<n; i++){
+			for(int j=i; j<n; j++){
+				a = RND;
+				gsl_matrix_set(A_time, i, j, a);
+				gsl_matrix_set(A_time, j, i, a);
+			}
+		}
+		double number_rot_cyclic2=0;
+		start = clock();
+		sweaps = jacobi_cyclic(A_time,e_time,V_time,&number_rot_cyclic2);
+		end = clock();
+		cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
+		fprintf(timedata,"%i\t%g\n",n,cpu_time_used);
+		gsl_vector_set(x,i,n);
+		gsl_vector_set(y,i,cpu_time_used);
+		gsl_vector_set(dy,i,1.0);
+		gsl_matrix_free(A_time);
+		gsl_matrix_free(V_time);
+		gsl_vector_free(e_time);
+		i++;
+	}
+	fclose(timedata);
+
+	double funs2(int i, double x){
+   		switch(i){
+   		case 0: return x*x*x; break;
+	   	default: {fprintf(stderr,"funs: wrong i:%d",i); return NAN;}
+   		}
+	}
+	
+	least_squares(x,y,dy,m,funs2,c,COV);
+	FILE* errorfit = fopen("cyclic_time_fit.txt","w+");
+	double delta_N=0.2, max_N=n_max; 
+	for(double N=1;N<max_N;N+=delta_N){
+		fprintf(errorfit,"%g\t%g\n",N,gsl_vector_get(c,0)*N*N*N);
+	}
+	fclose(errorfit);
+	printf("\nCheck that error behaves as O(n^3) by Least squares fit\n");
+	printf("of the cyclic jacobi algorithm from n=%i to n=%i\n",n_start,n_max);	
+	printf("Fit coefficient found:%g\n",gsl_vector_get(c,0));
+	printf("As one can see on the plot.svg the time follows very nicely\n"
+		"the O(n^3) prediction. There is of course uncertainty from the\n"
+		"prediction because of the randomness component in initializing matrix A\n\n");
+	gsl_vector_free(x);
+	gsl_vector_free(y);
+	gsl_vector_free(dy);
+	gsl_matrix_free(COV);
+	gsl_vector_free(c);
+	
 
 	// Part B 
 	int n_eigval = 1; int number_rot_eig_by_eig = 0;
