@@ -1,57 +1,50 @@
-A. Recursive adaptive integration
+A. Plain Monte Carlo integration
 
-Integrating sqrt(x) from 0 to 1
-Absolute accuracy:0.001, relative accuracy: 1e-06
-Theoretical=2/3, Calculated=0.666954
-Number of function calls: 16
+Integrating dr dphi dtheta r^2 from 0 to 1, 0 to 2pi and 0 to pi
+Number of points: 1000000
+Result: 6.57841, correct answer is: 6.57974
+Error: 0.00588099 
 
-Integrating 1/sqrt(x) from 0 to 1
-Absolute accuracy:0.001, relative accuracy: 1e-06
-Theoretical=2, Calculated=1.99996
-Number of function calls: 8576
+Integrating dx dy dz dq x*y^2*z^3*q^4 from 0 to 1, 1 to 2 and 2 to 3 and 3 to 4
+Number of points: 10000000
+Result: 2961.31, correct answer is: 2961.29
+Error: 0.872235
 
-Integrating ln(x)/sqrt(x) from 0 to 1
-Absolute accuracy:0.001, relative accuracy: 1e-06
-Theoretical=-4, Calculated=-3.99997
-Number of function calls: 80556
+Integrating dx dy dz (1-cos(x)cos(y)cos(z))^-1/pi^3 from 0 to pi, 0 to pi and 0 to pi
+Number of points: 10000000
+Result: 1.39322, correct answer is: 1.393204 
+Error: 0.00408073
 
-Integrating 4*sqrt(1-(1-x)^2) from 0 to 1
-Absolute accuracy:1e-18, relative accuracy: 1e-18
-Theoretical=pi, Calculated=3.14159265358979311600
-Number of function calls: 40262692
+B. Check that error behaves as O(1/√N)
 
+Testing on the first function from previous ex.
+Fit coefficient found:5.91521
+As one can see on the plot.svg the error follows very nicely
+the 1/sqrt(N) prediction. There is of course more uncertainty from that
+prediction for low N because here the randomness component of choosing the
+points is more important
 
-B. Infinite limits
+C. 2D adaptive integrator
 
-Integrating x^2*exp(-x^2/4) from 0 to infinity
-Absolute accuracy:0.001, relative accuracy: 1e-06
-Theoretical=3.54491, Calculated=3.5449
-Number of function calls: 96
-GSL_result is:3.54491
-Number of function calls: 105
+Integrating dx dy exp(y/x) from 0 to 1 and for x <=y<=x^3
+Absolute accuracy: 1e-06, relative accuracy: 1e-06
+Theoretical result: 21.8625113597, calculated:21.8625113595
 
-Integrating x^6*exp(-x^2/4) from 0 to infinity
-Absolute accuracy:0.001, relative accuracy: 1e-06
-Theoretical=212.694, Calculated=212.694
-Number of function calls: 672
-GSL_result is:212.694
-Number of function calls: 105
+Integrating dx dy 4xy-y^3 from 0 to 1 and for x^3 <=y<=sqrt(x)
+Absolute accuracy: 1e-06, relative accuracy: 1e-06
+Theoretical result: 0.3525641026, calculated:0.3525641403
 
-As one can see the gsl library was more effective in the second case
-but not in the first. It uses the Gauss-Kronrod 21 algorithm with 
-variable transformations as I did. So perhaps their algorithm is best for complicated
-functions
+D. 3D adaptive integrator
 
-C. Clenshaw–Curtis variable transformation
+Integrating dx dy dz dz 8*x*y*z from 0 to 1, 1 to 2, 2 to 3
+Absolute accuracy: 1e-06, relative accuracy: 1e-06
+Theoretical result: 15.0000000000, calculated:15.0000000000
 
-Integrating 1/sqrt(x) from 0 to 1
-Absolute accuracy:0.001, relative accuracy: 1e-06
-Theoretical=2, Calculated=2
-Number of function calls: 24
-Integrating ln(x)/sqrt(x) from 0 to 1
-Absolute accuracy:0.001, relative accuracy: 1e-06
-Theoretical=-4, Calculated=-3.99997
-Number of function calls: 128
+Integrating dr dphi dtheta r^2 from 0 to 1, 0 to 2pi and 0 to pi as in function 1
+Absolute accuracy: 1e-06, relative accuracy: 1e-06
+Theoretical result: 6.5797362674, calculated:6.5797362674
 
-As one can see it is actually many times faster than the
-simple adaptive one we made before for integrations diverging at the limit.
+Integrating dx dy dz (1-cos(x)cos(y)cos(z))^-1/pi^3 from 0 to pi, 0 to pi and 0 to pi as in function 3
+Absolute accuracy: 0.001, relative accuracy: 0.0001
+Theoretical result: 1.3932039297, calculated:1.3963847659
+

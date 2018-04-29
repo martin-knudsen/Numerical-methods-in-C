@@ -59,26 +59,56 @@ double adapt_2D(double old_f(double x, double y),double c_f(double),
 	int nrec=0;
 	double f2, f3,a,b, result;
 
-	double f_outer(double y) {
-				double f_inner(double x){
+	double f_outer(double x) {
+				double f_inner(double y){
 					return old_f(x,y);
 				}
-				nrec=0;
-				a=c_f(y); 
-				b=d_f(y);
-				f2=f_inner(a+2*(b-a)/6);
-				f3=f_inner(a+4*(b-a)/6);
-				result=adapt24(f_inner,old_f,a,b,acc,eps,f2,f3,nrec);
+				
+				a=c_f(x); 
+				b=d_f(x);
+				
+				result=adapt(f_inner,a,b,acc,eps);
 				return result;
 			}
 
 	a=a_old; b=b_old;
-	f2=f_outer(a+2*(b-a)/6);
-
-	f3=f_outer(a+4*(b-a)/6);
-	result = adapt24(f_outer,old_f,a,b,acc,eps,f2,f3,nrec);
+	
+	result = adapt(f_outer,a,b,acc,eps);
 	return result;
 
 }
+
+double adapt_3D(double old_f(double x, double y, double z),double ax,
+ double bx, double ay,double by,double az, double bz,double acc,double eps){
+	// Rescaling the points x2 and x3 and finding the function values
+	int nrec=0;
+	double f2, f3,a,b, result;
+	double f_super_outer(double z){
+		double f_outer(double y) {
+			double f_inner(double x){
+				return old_f(x,y,z);
+			}
+				
+			a=ax; 
+			b=bx;
+				
+			result=adapt(f_inner,a,b,acc,eps);
+			return result;
+			}
+		
+		a=ay; 
+		b=by;
+		
+		result=adapt(f_outer,a,b,acc,eps);
+		return result;
+			}
+
+	a=az; b=bz;
+	
+	result = adapt(f_super_outer,a,b,acc,eps);
+	return result;
+
+}
+
 	
 

@@ -111,25 +111,79 @@ int main(void) {
 	// part C
 	printf("C. 2D adaptive integrator\n\n");
 
-	double c_lim(double y){
-		return y;
+	double c_lim(double x){
+		return x;
 	}
-	double d_lim(double y){
-		return y*y*y;
+	double d_lim(double x){
+		return x*x*x;
 	}
 	double a4=1.0, b4=2.0;
-
+	// integrals and solutions found on http://tutorial.math.lamar.edu/Classes/CalcIII/DIGeneralRegion.aspx#MultInt_GenReg_Ex1a
 	double two_D_function(double x,double y){
-		return exp(x/y);
+		return exp(y/x);
 	}
-
 	double two_D_function2(double x,double y){
 		return 4*x*y-y*y*y;
 	}
-	double acc=1e-5, eps=1e-5; 
+	double c_lim2(double x){
+		return x*x*x;
+	}
+	double d_lim2(double x){
+		return sqrt(x);
+	}
+	double acc=1e-6, eps=1e-6; 
 	result = adapt_2D(two_D_function,c_lim,d_lim,a4,b4,acc,eps);
+	double theo = 1.0/2.0*exp(4.0)-2.0*M_E;
+	printf("Integrating dx dy exp(y/x) from 0 to 1 and for x <=y<=x^3\n");
+	printf("Absolute accuracy: %g, relative accuracy: %g\n",acc,eps);
+	printf("Theoretical result: %7.10f, calculated:%7.10f\n\n",theo,result);
 
-	printf("result:%g\n",result);
+	a4=0; b4=1;
+	acc=1e-6; eps=1e-6; 
+	result = adapt_2D(two_D_function2,c_lim2,d_lim2,a4,b4,acc,eps);
+	theo = 55.0/156.0;
+	printf("Integrating dx dy 4xy-y^3 from 0 to 1 and for x^3 <=y<=sqrt(x)\n");
+	printf("Absolute accuracy: %g, relative accuracy: %g\n",acc,eps);
+	printf("Theoretical result: %7.10f, calculated:%7.10f\n\n",theo,result);
+
+	// D
+
+	printf("D. 3D adaptive integrator\n\n");
+	// Integral found at http://tutorial.math.lamar.edu/Classes/CalcIII/TripleIntegrals.aspx
+	double three_D_function(double x,double y,double z){
+		return 8*x*y*z;
+	}
+	double ax=1, bx=2, ay=2, by=3, az=0, bz=1;
+	acc=1e-6; eps=1e-6; 
+	result= adapt_3D(three_D_function,ax,bx,ay,by,az,bz,acc,eps);
+	theo = 15.0;
+	printf("Integrating dx dy dz dz 8*x*y*z from 0 to 1, 1 to 2, 2 to 3\n");
+	printf("Absolute accuracy: %g, relative accuracy: %g\n",acc,eps);
+	printf("Theoretical result: %7.10f, calculated:%7.10f\n\n",theo,result);
+
+
+	ax=0, bx=1, ay=0, by=2*M_PI, az=0, bz=M_PI;
+	acc=1e-6; eps=1e-6; 
+	double f1_3D(double r,double phi, double theta){
+		return r*r;
+		
+	}
+	result= adapt_3D(f1_3D,ax,bx,ay,by,az,bz,acc,eps);
+	theo = 2*M_PI*M_PI/3;
+	printf("Integrating dr dphi dtheta r^2 from 0 to 1, 0 to 2pi and 0 to pi as in function 1\n");
+	printf("Absolute accuracy: %g, relative accuracy: %g\n",acc,eps);
+	printf("Theoretical result: %7.10f, calculated:%7.10f\n\n",theo,result);
+
+	ax=0, bx=M_PI, ay=0, by=M_PI, az=0, bz=M_PI;
+	acc=1e-3; eps=1e-4; 
+	double f3_3D(double x, double y, double z){
+		return 1/(1-cos(x)*cos(y)*cos(z))/(M_PI*M_PI*M_PI);
+	}
+	result= adapt_3D(f3_3D,ax,bx,ay,by,az,bz,acc,eps);
+	theo = 1.3932039296856768591842462603255;
+	printf("Integrating dx dy dz (1-cos(x)cos(y)cos(z))^-1/pi^3 from 0 to pi, 0 to pi and 0 to pi as in function 3\n");
+	printf("Absolute accuracy: %g, relative accuracy: %g\n",acc,eps);
+	printf("Theoretical result: %7.10f, calculated:%7.10f\n\n",theo,result);
 
 	return EXIT_SUCCESS;
 }
