@@ -10,7 +10,7 @@ int jacobi_cyclic(gsl_matrix* A,gsl_vector* e,gsl_matrix* V, int* number_rot){
 	// initiating the size, number of sweeps and if it has changed
 	// in last sweep.
 	int changed,sweeps=0,n=A->size1;
-
+	*number_rot=0;
 	// put diagonal elements of A in vector e
 	for(int i=0;i<n;i++)gsl_vector_set(e,i,gsl_matrix_get(A,i,i));
 		gsl_matrix_set_identity(V);

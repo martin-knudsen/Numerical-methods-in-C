@@ -2,9 +2,9 @@ set term svg background rgb "white"
 set terminal svg
 set output "plot.svg"
 set key out 
-set xlabel("N")
+set xlabel("n")
 set ylabel("Time [s]")
-set title "least squares fit of Time(N)=c_1*N^3"
+set title "least squares fit of Time(n)=c_1*n^3"
 
 plot "cyclic_time.txt" title "Data",\
 "cyclic_time_fit.txt" with lines title "Fit"

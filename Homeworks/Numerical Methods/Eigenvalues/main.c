@@ -35,7 +35,7 @@ void printv(gsl_vector *A){
 
 int main() {
 		
-	int n = 3;
+	int n = 5;
 
 	gsl_matrix* A = gsl_matrix_alloc(n, n);
 	gsl_matrix* A_clone = gsl_matrix_alloc(n, n);
@@ -209,7 +209,9 @@ int main() {
 	sweaps = jacobi_classic(A,e,V, &number_rot_waste);
 	printv(e);
 	printf("This many rotations %i\n",number_rot_waste);
-
+	printf("So it is faster than the cyclical as expected. However this comes at the cost of\n"
+		"having to update the list of indices. This however is worth it since it takes O(n) time\n"
+		"and is therefore not the bottleneck of the algorithm (atleast if n is big)\n");
 	gsl_matrix_free(A);
 	gsl_matrix_free(A_clone);
 	gsl_matrix_free(V);

@@ -15,20 +15,19 @@ int jacobi_classic(gsl_matrix* A,gsl_vector* e,gsl_matrix* V, int* number_rot){
 	int changed,sweeps=0,n=A->size1;
 
 	// building a new array of largest indices ""
-	gsl_vector* indices = gsl_vector_alloc(n);
+	gsl_vector* indices = gsl_vector_alloc(n-1);
 	double new_el;
 	double old_el;
-	for(int i=0; i<n; i++){
+	for(int i=0; i<n-1; i++){
 		old_el = -INFINITY;		
 		for(int j=i+1; j<n; j++){
-			new_el = gsl_matrix_get(A, i, j);
+			new_el = fabs(gsl_matrix_get(A, i, j));
 			if(new_el>old_el) {
 				old_el=new_el;
 				gsl_vector_set(indices, i, j);
 			}
 		}
 	}
-
 	// put diagonal elements of A in vector e
 	for(int i=0;i<n;i++)gsl_vector_set(e,i,gsl_matrix_get(A,i,i));
 		gsl_matrix_set_identity(V);
@@ -38,7 +37,8 @@ int jacobi_classic(gsl_matrix* A,gsl_vector* e,gsl_matrix* V, int* number_rot){
 
 	// iterating over all upper diagonal elements of A in a cyclic fashion
 	for(p=0;p<n-1;p++){
-		q = gsl_vector_get(indices, p);
+		
+		q=gsl_vector_get(indices,p);
 
 		// Save all the old A values at p and q used in phi
 		double app=gsl_vector_get(e,p);
@@ -54,7 +54,8 @@ int jacobi_classic(gsl_matrix* A,gsl_vector* e,gsl_matrix* V, int* number_rot){
 		// calculate the new diagonal values at q and p of A1 according to (3.9)
 		double app1=c*c*app-2*s*c*apq+s*s*aqq;
 		double aqq1=s*s*app+2*s*c*apq+c*c*aqq;
-
+		old_el = -INFINITY;		
+		
 
 		// If there is any change in the diagonal elements at q and p do
 		if(app1!=app||aqq1!=aqq){changed=1; // mark that there was a change
@@ -96,21 +97,20 @@ int jacobi_classic(gsl_matrix* A,gsl_vector* e,gsl_matrix* V, int* number_rot){
 				double viq=gsl_matrix_get(V,i,q);
 				gsl_matrix_set(V,i,p,c*vip-s*viq);
 				gsl_matrix_set(V,i,q,c*viq+s*vip);}
-	}}
-	for(int i=0; i<n-1; i++){
-		old_el = -1e8;		
-		for(int j=i+1; j<n-1; j++){
-			new_el = gsl_matrix_get(A, i, j);
+
+				for(int j=p+1; j<n; j++){
+			new_el = fabs(gsl_matrix_get(A, p, j));
 			if(new_el>old_el) {
 				old_el=new_el;
-				gsl_vector_set(indices, i, j);
+				gsl_vector_set(indices, p, j);
 			}
 		}
+
+			
 	}
-	/*
-	printm(A);
-	printv(indices);
-	*/
+
+}
+
 }
 	while(changed!=0);
 	return sweeps;}

@@ -3,9 +3,9 @@ LDLIBS = `gsl-config --libs`
  
 all: main
 
-	\time -f "%U" -ao time.txt ./main
+	\time -f "%U" -ao time.txt ./main > out.txt
 
-	gnuplot plot.gpi
+	gnuplot plot.gpi 
 
 main: main.o jacobi_cyclic.o jacobi_eig_by_eig.o jacobi_classic.o QR.o QR_ls.o
 

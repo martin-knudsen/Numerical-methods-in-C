@@ -1,46 +1,67 @@
 This is A:
-  0.840  0.394  0.783
-  0.394  0.798  0.912
-  0.783  0.912  0.198
+  0.840  0.394  0.783  0.798  0.912
+  0.394  0.198  0.335  0.768  0.278
+  0.783  0.335  0.554  0.477  0.629
+  0.798  0.768  0.477  0.365  0.513
+  0.912  0.278  0.629  0.513  0.952
 Using cyclic jacobi it has eigenvalue matrix D:
- -0.603  0.000  0.000
-  0.000  0.432  0.000
-  0.000  0.000  2.008
+ -0.557  0.000  0.000  0.000  0.000
+  0.000 -0.124  0.000  0.000  0.000
+  0.000  0.000  0.069  0.000  0.000
+  0.000  0.000  0.000  0.461  0.000
+  0.000  0.000  0.000  0.000  3.059
 and eigenvectors:
- -0.329  0.750  0.574
- -0.448 -0.659  0.604
-  0.831 -0.059  0.553
-It took only 5 sweaps
+ -0.285  0.756  0.169 -0.087  0.557
+ -0.624 -0.328 -0.217  0.611  0.287
+  0.072 -0.465  0.770 -0.099  0.419
+  0.724  0.066 -0.190  0.511  0.418
+  0.011 -0.316 -0.544 -0.590  0.506
+It took only 6 sweaps
 Checking that V^TAV:
- -0.603 -0.000  0.000
- -0.000  0.432 -0.000
-  0.000 -0.000  2.008
+ -0.557 -0.000  0.000  0.000 -0.000
+ -0.000 -0.124  0.000 -0.000  0.000
+  0.000  0.000  0.069  0.000 -0.000
+  0.000 -0.000  0.000  0.461  0.000
+ -0.000  0.000 -0.000  0.000  3.059
+
+Check that error behaves as O(n^3) by Least squares fit
+of the cyclic jacobi algorithm from n=2 to n=20
+Fit coefficient found:1.44007e-07
+As one can see on the plot.svg the time follows very nicely
+the O(n^3) prediction. There is of course uncertainty from the
+prediction because of the randomness component in initializing matrix A
+
 1. Using the same matrix A as before for comparison
 The resulting 1 lowest eigenvalues are
- -0.603
+ -0.557
 The reason for this being the lowest is that this 
 Eigenvalue is calculated by the most subtractions of all
 In the algorithm according to (3.9.4) 
 The resulting 2 lowest eigenvalues are
- -0.603
-  0.432
+ -0.557
+ -0.124
 The algorithm works by constantly making the off-diagonal elements 
 smaller. when we have already zeroed a row
 there is no reason to make it smaller
 Just as before we have the second most subtraction of any diagonal
 element
 The resulting 3 lowest eigenvalues are
- -0.603
-  0.432
-  2.008
+ -0.557
+ -0.124
+  0.069
 2. The way to find the biggest eigenvalues is just 
 to add pi/2 to phi
-normal run of the algorithm takes 15 rotations
-Finding only the first eigenvalue using eig by eig takes 18 rotations
-Finding all eigenvalues using eig by eig takes: 15
+normal run of the algorithm takes 39 rotations
+Finding only the first eigenvalue using eig by eig takes 108 rotations
+Finding all eigenvalues using eig by eig takes: 348
 So it doesn't take less rotations, but maybe less time because of a saved for-loop
 C. The classic algorithm gives this result:
- -0.575
-  0.432
-  1.979
-This many rotations 18
+ -0.557
+ -0.124
+  0.069
+  0.461
+  3.059
+This many rotations 33
+So it is faster than the cyclical as expected. However this comes at the cost of
+having to update the list of indices. This however is worth it since it takes O(n) time
+and is therefore not the bottleneck of the algorithm (atleast if n is big)
