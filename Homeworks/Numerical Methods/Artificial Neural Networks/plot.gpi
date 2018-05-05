@@ -1,0 +1,12 @@
+set term svg background rgb "white"
+set terminal svg
+set output "plot.svg"
+set key out 
+set xlabel("x")
+set ylabel("y")
+set title "Interpolation using Neural Network of the function cos(x)"
+
+plot "data_points.txt" title "Data"\
+,"lineardata.txt" title "Interpolation" with lines\
+
+
