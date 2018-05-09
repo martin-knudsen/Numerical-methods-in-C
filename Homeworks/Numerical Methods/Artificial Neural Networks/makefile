@@ -5,10 +5,11 @@ all: main
 
 	 ./main 
 	 gnuplot plot.gpi
+	 gnuplot plot2.gpi
 
-main: main.o ANN.o QR.o Newton.o
+main: main.o ANN.o QR.o Newton.o qnewton.o
 
-main.o ANN.o QR.o Newton.o: ANN.h QR.h Newton.c 
+main.o ANN.o QR.o Newton.o qnewton.o: ANN.h QR.h Newton.c qnewton.h 
 
 .Phony: clean 
 clean: 

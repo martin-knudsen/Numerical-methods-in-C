@@ -1,0 +1,17 @@
+set term svg background rgb "white"
+set term svg
+set terminal svg
+set output "plot2.svg"
+set key out 
+set xlabel("x")
+set ylabel("y")
+set title "2D interpolation of Rosenbrock using ANN"
+
+set xrange [-1.5:1.5]
+set yrange [-0.5:3.0]
+set ticslevel 0
+set zlabel("f(x,y)")
+
+
+splot "data_points_2D.txt" u 1:2:3 title "Rosenbrock data",\
+"data_2D.txt" u 1:2:3 title "Rosenbrock interpolation"

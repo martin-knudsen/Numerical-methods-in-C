@@ -95,8 +95,87 @@ int main(void) {
 	fclose(data_points);
 
 
-	// C
+	// B
+	printf("B. Testing the ANN on 2D interpolation of Rosenbrock function\n");
+	
+	double rosenbrock(double x,double y) {
+		return (1-x)*(1-x)+pow(y-pow(x,2),2);
+	}
 
+	gsl_matrix* f_coord_2D=gsl_matrix_alloc(121,2);
+	gsl_vector* f_2D=gsl_vector_alloc(121); 
+	double xstart=-1.5, xslut=1.5, ystart=-0.5,yslut=3.0;
+	double xdelta=(xslut-xstart)/10,ydelta=(yslut-ystart)/10; 
+	int x_int=0, y_int=0;
+	for(double xx=xstart;xx<=xslut+0.0001;xx+=xdelta){
+		y_int=0;
+		for(double yy=ystart;yy<=yslut+0.0001;yy+=ydelta){
+			gsl_matrix_set(f_coord_2D,x_int*11+y_int,0,xx);
+			gsl_matrix_set(f_coord_2D,x_int*11+y_int,1,yy);
+			double fxy=rosenbrock(xx,yy);
+			gsl_vector_set(f_2D,x_int*11+y_int,fxy);
+			
+			y_int++;
+			
+		}
+		x_int++;
+	}
+
+
+	//printm(f_coord_2D);
+	
+	printf("Plot can be seen in plot2.svg \n");
+	
+	// ANN stuff
+	number_of_hidden_neurons = 25;
+	double activation_function2D(double x1,double x2) {
+		return x1*exp(-x1*x1)+x2*exp(-x2*x2);
+	}
+	
+
+	ann2D* network2D = ann2D_alloc(number_of_hidden_neurons, &activation_function);
+	for(int i=0; i<number_of_hidden_neurons;i++){
+		gsl_vector_set(network2D->data,i*5,RND*i/number_of_hidden_neurons);
+		gsl_vector_set(network2D->data,i*5+1,RND*10);
+		gsl_vector_set(network2D->data,i*5+2,RND*i/number_of_hidden_neurons);
+		gsl_vector_set(network2D->data,i*5+3,RND*8);
+		gsl_vector_set(network2D->data,i*5+4,RND*1);
+
+	}
+	//printv(network2D->data);
+
+	ann2D_train(network2D,f_coord_2D,f_2D);
+	// ANN stuff end
+//printv(network2D->data);
+	FILE *data2D = fopen("data_2D.txt", "w+");
+	gsl_vector* xxx=gsl_vector_alloc(2);
+	for(x_it = xstart; x_it <xslut; x_it += xdelta){
+		for(double y_it = ystart; y_it <yslut; y_it += ydelta){
+			
+			gsl_vector_set(xxx,0,x_it);
+			gsl_vector_set(xxx,1,y_it);
+			spline_result = ann2D_feed_forward(network2D,x_it,y_it);
+			//printf("%g\n",ann_feed_forward(network,x_it));
+			fprintf(data2D, "%g \t %g \t %g\n",x_it,y_it,spline_result);
+		}
+	}
+
+	fclose(data2D);
+
+	FILE *data_points2D  =fopen("data_points_2D.txt", "w+");
+	for(int i=0; i<121; i++) {
+		fprintf(data_points2D, "%g \t %g \t %g\n",\
+			gsl_matrix_get(f_coord_2D,i,0),\
+			gsl_matrix_get(f_coord_2D,i,1),\
+			gsl_vector_get(f_2D,i));
+	}
+	fclose(data_points2D);
+
+	printf("%g\n",rosenbrock(2.0,2.0));
+	printf("%g\n",ann2D_feed_forward(network2D,2.0,2.0));
+
+	// C
+	/*
 	int zero[7][5] = {
 		{1,1,1,0,0},
 		{1,0,1,0,0},
@@ -224,17 +303,14 @@ int main(void) {
 		}
 	}
 
-
-	
-
-
-
-
-
-
+	*/
 	gsl_vector_free(xvec);
 	gsl_vector_free(yvec);
+	gsl_vector_free(f_2D);
+	gsl_matrix_free(f_coord_2D);
+
 
 	ann_free(network);
+	ann2D_free(network2D);
 	return EXIT_SUCCESS;
 }
