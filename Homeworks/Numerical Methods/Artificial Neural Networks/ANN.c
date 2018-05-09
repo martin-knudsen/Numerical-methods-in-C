@@ -105,7 +105,7 @@ double ann2D_feed_forward(ann2D* network, double x1, double x2){
 void ann2D_train(ann2D* network, gsl_matrix* xlist, gsl_vector* ylist){
 	int N=ylist->size;
 	int n=network->n;
-	double epsilon=1e-6, dx=1e-6, sum=0,Fpk,xk1,xk2,yk;
+	double epsilon=1e-6, dx=1e-3, sum=0,Fpk,xk1,xk2,yk;
 
 	double func (gsl_vector* p){
 		gsl_vector_memcpy(network->data,p);
@@ -125,7 +125,7 @@ void ann2D_train(ann2D* network, gsl_matrix* xlist, gsl_vector* ylist){
 	gsl_vector_memcpy(p,network->data);
 	//printv(p);
 
-	qnewton(func,p,epsilon);
+	newton_minimization_Broyden_num_gradient(func,p,dx,epsilon);
 	gsl_vector_memcpy(network->data,p);
 	//printv(p);
 	gsl_vector_free(p);

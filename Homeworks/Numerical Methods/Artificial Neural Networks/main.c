@@ -102,18 +102,18 @@ int main(void) {
 		return (1-x)*(1-x)+pow(y-pow(x,2),2);
 	}
 
-	gsl_matrix* f_coord_2D=gsl_matrix_alloc(121,2);
-	gsl_vector* f_2D=gsl_vector_alloc(121); 
+	gsl_matrix* f_coord_2D=gsl_matrix_alloc(21*21,2);
+	gsl_vector* f_2D=gsl_vector_alloc(21*21); 
 	double xstart=-1.5, xslut=1.5, ystart=-0.5,yslut=3.0;
-	double xdelta=(xslut-xstart)/10,ydelta=(yslut-ystart)/10; 
+	double xdelta=(xslut-xstart)/20,ydelta=(yslut-ystart)/20; 
 	int x_int=0, y_int=0;
 	for(double xx=xstart;xx<=xslut+0.0001;xx+=xdelta){
 		y_int=0;
 		for(double yy=ystart;yy<=yslut+0.0001;yy+=ydelta){
-			gsl_matrix_set(f_coord_2D,x_int*11+y_int,0,xx);
-			gsl_matrix_set(f_coord_2D,x_int*11+y_int,1,yy);
+			gsl_matrix_set(f_coord_2D,x_int*21+y_int,0,xx);
+			gsl_matrix_set(f_coord_2D,x_int*21+y_int,1,yy);
 			double fxy=rosenbrock(xx,yy);
-			gsl_vector_set(f_2D,x_int*11+y_int,fxy);
+			gsl_vector_set(f_2D,x_int*21+y_int,fxy);
 			
 			y_int++;
 			
@@ -142,11 +142,141 @@ int main(void) {
 		gsl_vector_set(network2D->data,i*5+4,RND*1);
 
 	}
+
+double	good_run[25*5]={99.190168,
+29.375673,
+-40.926346,
+11.235734,
+-35.003041,
+2.285584,
+3.412960,
+-1.485682,
+-7.748044,
+-219.401369,
+104.951342,
+11.450845,
+-27.208924,
+9.492107,
+-19.699497,
+3.423240,
+29.260512,
+13.642931,
+31.720577,
+-68.098734,
+-99.244340,
+-16.933260,
+73.139432,
+-26.895811,
+-142.365909,
+3.905679,
+24.850912,
+-1.857236,
+6.057941,
+-130.237961,
+28.019959,
+51.620624,
+1.023399,
+6.208851,
+-113.129672,
+87.010286,
+15.390396,
+3.633420,
+-0.178211,
+-31.319733,
+-26.345890,
+-6.349987,
+8.329989,
+15.411852,
+-38.991831,
+-18.648669,
+29.261765,
+10.283529,
+-19.051004,
+32.441872,
+37.029560,
+-89.134725,
+-9.310248,
+8.477278,
+-31.881793,
+-11.860421,
+32.571193,
+81.506413,
+46.502669,
+-90.957916,
+-1.518771,
+0.131409,
+5.669996,
+4.940275,
+-54.151028,
+102.128736,
+45.973785,
+26.011598,
+3.683328,
+55.568764,
+82.583366,
+-47.189511,
+-0.227535,
+12.463581,
+-18.917888,
+35.959602,
+36.299384,
+48.790272,
+21.356770,
+91.971150,
+142.077502,
+71.759991,
+21.285876,
+2.464629,
+65.774956,
+129.181281,
+11.694518,
+-14.531466,
+3.851034,
+-1.058134,
+24.724859,
+18.598823,
+21.577701,
+19.556946,
+116.576903,
+109.775893,
+72.052417,
+42.021168,
+34.340933,
+175.592419,
+-66.663129,
+-22.039019,
+-2.283104,
+10.082025,
+-47.319711,
+33.617914,
+24.923635,
+48.232291,
+27.765458,
+106.493414,
+27.476431,
+5.869115,
+37.277019,
+39.523005,
+17.613724,
+50.183358,
+24.826046,
+16.386798,
+2.115324,
+-63.377280,
+153.521061,
+-11.125095,
+-42.316061,
+13.717599,
+-53.803985,
+};
+for(int i=0;i<25*5;i++){
+	gsl_vector_set(network2D->data,i,good_run[i]);
+}
 	//printv(network2D->data);
 
 	ann2D_train(network2D,f_coord_2D,f_2D);
 	// ANN stuff end
-//printv(network2D->data);
+	//printv(network2D->data);
 	FILE *data2D = fopen("data_2D.txt", "w+");
 	gsl_vector* xxx=gsl_vector_alloc(2);
 	for(x_it = xstart; x_it <xslut; x_it += xdelta){
@@ -163,7 +293,7 @@ int main(void) {
 	fclose(data2D);
 
 	FILE *data_points2D  =fopen("data_points_2D.txt", "w+");
-	for(int i=0; i<121; i++) {
+	for(int i=0; i<21*21; i++) {
 		fprintf(data_points2D, "%g \t %g \t %g\n",\
 			gsl_matrix_get(f_coord_2D,i,0),\
 			gsl_matrix_get(f_coord_2D,i,1),\
@@ -171,8 +301,14 @@ int main(void) {
 	}
 	fclose(data_points2D);
 
-	printf("%g\n",rosenbrock(2.0,2.0));
-	printf("%g\n",ann2D_feed_forward(network2D,2.0,2.0));
+	printf("Number of hidden neurons: 25\n");
+	printf("To find good starting values or the weights they were found from a previous training run\n");
+	printf("As one can see from the plot it seems to capture the trend but not exactly the function value \n"
+			"For more training points more neurons, smaller epsilon and better start conditions might be required\n"
+			"For plot2 there was used 441 points, and on plot2_121_points there was used 121 points \n");
+
+	//printf("%g\n",rosenbrock(2.0,2.0));
+	//printf("%g\n",ann2D_feed_forward(network2D,2.0,2.0));
 
 	// C
 	/*
