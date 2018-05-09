@@ -1,0 +1,4 @@
+Multiprocessing of Interpolation exercise.
+This is made by parallel processing the linear, quadric and cubic spline
+part of that exercise. The results are the same but each output is in 
+out1.txt, out2.txt and out3.txt respectively

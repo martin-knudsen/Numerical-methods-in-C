@@ -5,7 +5,6 @@
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_blas.h>
 #include "Newton.h"
-#include "qnewton.h"
 typedef struct {int n; double (*f)(double); gsl_vector* data;} ann;
 typedef struct {int n; double (*f)(double); gsl_vector* data;} ann2D;
 
