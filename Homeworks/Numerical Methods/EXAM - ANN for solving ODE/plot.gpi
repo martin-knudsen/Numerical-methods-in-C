@@ -4,9 +4,9 @@ set output "plot.svg"
 set key out 
 set xlabel("x")
 set ylabel("y")
-set title "Interpolation using Neural Network of the function cos(x)"
+set title "Solving logistic function with Neural Network"
 
-plot "data_points.txt" title "Data"\
-,"lineardata.txt" title "Interpolation" with lines\
+plot "logdata.txt" using 1:3 title "Analytic solution"\
+,"logdata.txt" using 1:2 title "ANN solution" with lines\
 
 
