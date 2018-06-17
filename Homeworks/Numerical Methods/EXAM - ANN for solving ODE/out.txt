@@ -1,0 +1,11 @@
+A. Testing the ANN on the function I used in the interpolant exercise
+Testing if linear spline works. 
+Testfunction is cos(x) from 0 to 2pi. 
+Plot can be seen in plot.svg 
+B. Testing the ANN on 2D interpolation of Rosenbrock function
+Plot can be seen in plot2.svg 
+Number of hidden neurons: 25
+To find good starting values or the weights they were found from a previous training run
+As one can see from the plot it seems to capture the trend but not exactly the function value 
+For more training points more neurons, smaller epsilon and better start conditions might be required
+For plot2 there was used 441 points, and on plot2_121_points there was used 121 points 
