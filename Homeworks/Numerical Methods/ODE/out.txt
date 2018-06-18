@@ -5,7 +5,8 @@ dydx_0= y1*x
 dydx_1= -y0
 eps=0.01, acc=1e-26, max=1000000, b=7, hstart=0.35
 Startpoint set to:
-x=0y set to:
+x=0
+y set to:
 1.000000
 0.000000
 And the solution at y(7):
@@ -19,7 +20,8 @@ dydx_0= y1
 dydx_1= 1-y0+eps*y0*y0
 eps=1e-06, acc=1e-06, max=1000000, b=62.8319, hstart=0.001
 Startpoint set to:
-x=0y set to:
+x=0
+y set to:
 1.000000
 0.500000
 And the solution at y(62.8319):

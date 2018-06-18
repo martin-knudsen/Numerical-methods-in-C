@@ -10,15 +10,3 @@ As I get using the spline program
 The result of the test is: 
 True
 
-Testing if qspline spline works. 
-Testfunction is cos(x) from 0 to 2pi. 
-Data for plotting the qspline is found in qdata.txt 
-Integral of cos(x) from 0 to pi/2 is 1 analytically 
-Using qaudric splines I get 1.00045
-The theoretical derivative at point pi/2 is -1
-Using quadric splines I get -0.983609 
-Testing that all the coefficients calculated manually are the same
-As I get using the spline program
-The result of the test is: 
-True
-

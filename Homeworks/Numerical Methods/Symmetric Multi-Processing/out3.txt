@@ -9,14 +9,3 @@ I have plottet the result from gsl and my cspline in csplinetest.pdf
 This is the derivative result at pi/2 from GSL: -0.997859
 This is the integral result at pi/2 from GSL: 0.9937
 
-Testing if cspline spline works. 
-Testfunction is cos(x) from 0 to 2pi. 
-Data for plotting the cspline is found in cdata.txt 
-Integral of cos(x) from 0 to pi/2 is 1 analytically 
-Using cubic splines I get 1.0293
-The theoretical derivative at point pi/2 is -1
-Using cubic splines I get -0.996897 
-I have plottet the result from gsl and my cspline in csplinetest.pdf
-This is the derivative result at pi/2 from GSL: -0.997859
-This is the integral result at pi/2 from GSL: 0.9937
-

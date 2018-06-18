@@ -66,7 +66,7 @@ int main(void) {
 	printf("dydx_1= -y0\n");
 	printf("eps=%g, acc=%g, max=%i, b=%g, hstart=%g\n",eps,acc,max,b,h);
 	printf("Startpoint set to:\n");
-	printf("x=%g",gsl_vector_get(xlist,0));
+	printf("x=%g\n",gsl_vector_get(xlist,0));
 	printf("y set to:\n");
 	gsl_matrix_get_row(y,ylist,0);
 	printv(y);
@@ -89,7 +89,7 @@ int main(void) {
 	printf("dydx_1= 1-y0+eps*y0*y0\n");
 	printf("eps=%g, acc=%g, max=%i, b=%g, hstart=%g\n",eps,acc,max,b,h);
 	printf("Startpoint set to:\n");
-	printf("x=%g",gsl_vector_get(xlist,0));
+	printf("x=%g\n",gsl_vector_get(xlist,0));
 	printf("y set to:\n");
 	gsl_matrix_get_row(y,ylist,0);
 	printv(y);

@@ -26,7 +26,7 @@ Checking that V^TAV:
 
 Check that error behaves as O(n^3) by Least squares fit
 of the cyclic jacobi algorithm from n=2 to n=20
-Fit coefficient found:1.44007e-07
+Fit coefficient found:1.90212e-07
 As one can see on the plot.svg the time follows very nicely
 the O(n^3) prediction. There is of course uncertainty from the
 prediction because of the randomness component in initializing matrix A
