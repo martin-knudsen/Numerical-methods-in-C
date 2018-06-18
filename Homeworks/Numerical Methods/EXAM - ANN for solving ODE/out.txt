@@ -1,0 +1,18 @@
+The exam problem solved is 'Artificial neural network (ANN) for solving ODE'. 
+Solving logistic function
+y'=y*(1-y), x∈[-5,5], y(0)=0.5. 
+Solving gaussian function
+y'=-x*y, x∈[-5,5], y(0)=1. 
+Number of hidden neurons for both=6.
+Number of points in the interval used for training=25
+Activation function is gaussian wavelet for both.
+The analytical derivative of the activation function is used.
+Now both networks are trained by using my quasi-Newton method
+with broyden update implementation from the minimization homework.
+For comparison of how well the ANN solves the equations
+both the analytical solution found by seperation of variables and the ANN solution
+for 100 points in the interval are found.
+This is plotted in plot_log.svg and plot_gauss.svg respectively.
+As on can see the solutions are approximated very well with exception of
+the ends of the intervals.
+ 

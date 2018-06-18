@@ -11,12 +11,11 @@
 
 void qr_gs_decomp(gsl_matrix* A, gsl_matrix* R) {
 	int m = A->size2;
-	int n = A->size1;
 
 	gsl_vector_view a_i;
 	gsl_vector_view a_j;
 	
-	int status; double R_ij, R_ii;
+	double R_ij, R_ii;
 	for(int i=0; i<m; i++){
 		a_i= gsl_matrix_column(A, i);
 		R_ii=gsl_blas_dnrm2(&a_i.vector);
@@ -69,7 +68,7 @@ void qr_solve_system(gsl_matrix* A, gsl_vector* b, gsl_vector* x){
 	gsl_matrix_free(R);
 }
 
-void qr_gs_inverse(const gsl_matrix* Q, const gsl_matrix* R, gsl_matrix* B){
+void qr_gs_inverse(gsl_matrix* Q, gsl_matrix* R, gsl_matrix* B){
 	int n = Q->size1;
 
 	gsl_vector* x = gsl_vector_alloc(n);
