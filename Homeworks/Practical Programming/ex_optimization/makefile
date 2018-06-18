@@ -5,7 +5,7 @@ LDLIBS = -L/usr/lib/x86_64-linux-gnu -lgsl -lgslcblas -lm
 .PHONEY: all
 all: rosenbrock_minimum least_squares
 	
-	./rosenbrock_minimum > output.txt
+	./rosenbrock_minimum > out.txt
 
 	gnuplot rosenbrock_plot.gpi
 	

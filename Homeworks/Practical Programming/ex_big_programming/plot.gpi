@@ -1,6 +1,6 @@
 set term pdf
 set terminal pdf
-set output "Eigenvalue.pdf"
+set output "plot.pdf"
 set key out 
 set xlabel("n")
 set ylabel("Eig(n)")

@@ -90,7 +90,7 @@ int main() {
 	FILE *my_file;
 	my_file = fopen( "least_squares.txt", "w+");
 
-	FILE *another_file = fopen("output.txt","a+");
+	FILE *another_file = fopen("out.txt","a+");
 	fprintf(another_file, "Least squares part of the exercise\n");
 	do {
 		i++;

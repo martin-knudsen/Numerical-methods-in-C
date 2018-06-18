@@ -77,7 +77,7 @@ int main() {
 	/* finding the biggest eigenvalue for several n
 	   and directly printing it out. */
 
-	FILE *output  =fopen("output.txt", "w+");
+	FILE *output  =fopen("out.txt", "w+");
 	for(int n=1; n<=max_n; n++) {
 
 		double eigval = diagonalization(n);

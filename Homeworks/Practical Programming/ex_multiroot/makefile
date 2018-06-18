@@ -5,7 +5,7 @@ LDLIBS = -L/usr/lib/x86_64-linux-gnu -lgsl -lgslcblas -lm
 .PHONEY: all
 all: Rosenbrock shooting
 	
-	./Rosenbrock > output.txt
+	./Rosenbrock > out.txt
 	./shooting
 	
 	gnuplot plot_hydrogen.gpi

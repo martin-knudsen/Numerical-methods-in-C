@@ -5,7 +5,7 @@ LDLIBS = -L/usr/lib/x86_64-linux-gnu -lgsl -lgslcblas -lm
 .PHONEY: all
 all: integral_example energy_variational_principle the_reason
 	
-	./integral_example > output.txt
+	./integral_example > out.txt
 	./energy_variational_principle > data.txt
 
 	gnuplot plot.gpi

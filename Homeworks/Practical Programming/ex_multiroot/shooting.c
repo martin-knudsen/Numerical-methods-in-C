@@ -105,7 +105,7 @@ int main() {
 	int status;
   double E_val = 0.0, f0_val = 0.0; 
 	
-	FILE *fidel = fopen("output.txt", "a+");
+	FILE *fidel = fopen("out.txt", "a+");
 	fprintf(fidel, "Shooting method part\n");
 	do
     {
